@@ -59,22 +59,34 @@ p{margin:0;line-height:1.6}
 
 /* ---------- 封面 ---------- */
 .cover{background:radial-gradient(900px 520px at 108% -12%, var(--care-soft), transparent 60%),radial-gradient(760px 440px at -12% 112%, var(--aid-soft), transparent 60%),var(--paper);gap:30px}
-.cover h1{font-size:76px;line-height:1.16;font-weight:900}
+.cover h1{font-size:66px;line-height:1.18;font-weight:900}
 .cover h1 em{font-style:normal;background:linear-gradient(transparent 62%, #F6D9A3 62%)}
 .award{display:inline-flex;align-items:center;gap:14px;border:2px solid var(--gold);color:var(--gold);border-radius:999px;padding:10px 22px 10px 12px;font:700 24px/1 var(--f-display);align-self:flex-start}
 .medal{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;font:700 18px/1 var(--f-mono)}
 .who{font:900 36px/1.2 var(--f-display)}
 .what{font-size:22px;color:var(--mute);margin-top:6px}
 
+.covergrid{display:grid;grid-template-columns:1fr 290px;gap:44px;align-items:center}
+.covertext{display:flex;flex-direction:column;gap:28px;min-width:0}
+.deckqr{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:22px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;text-decoration:none;box-shadow:0 22px 44px -28px rgba(18,43,39,.5)}
+.deckqr .qr{width:236px;height:236px}
+.deckqr b{font:900 26px/1.3 var(--f-display)}
+.deckqr span{font-size:18px;color:var(--mute);line-height:1.45}
+.deckqr .u{font:600 13px/1.3 var(--f-mono);color:var(--care);word-break:break-all}
+.golink{display:inline-flex;align-items:center;gap:8px;align-self:flex-start;font:700 21px/1 var(--f-body);color:#fff;background:var(--gc,var(--care));padding:14px 20px;border-radius:12px;text-decoration:none}
+.golink:hover{filter:brightness(1.1)}
 /* ---------- 講師 ---------- */
-.speaker{display:grid;grid-template-columns:380px 1fr;gap:56px;align-items:center}
-.photo{width:380px;height:450px;border-radius:26px;overflow:hidden;background:var(--care-soft);position:relative;box-shadow:0 20px 44px -24px rgba(18,43,39,.55)}
-.photo img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:50% 35%;display:block}
+.speaker{display:grid;grid-template-columns:420px 1fr;gap:52px;align-items:center}
+.photo{width:420px;height:420px;border-radius:26px;overflow:hidden;background:var(--care-soft);position:relative;box-shadow:0 20px 44px -24px rgba(18,43,39,.55)}
+.photo img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:center;display:block}
 .photo .mono{position:absolute;inset:0;display:grid;place-items:center;font:900 96px/1 var(--f-display);color:var(--care)}
 .roles{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:26px}
 .roles li{display:flex;gap:14px;align-items:baseline}
 .roles li::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--care);flex:none;transform:translateY(-4px)}
-.fb{display:flex;gap:20px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 20px}
+.fb{display:flex;gap:18px;align-items:center;background:var(--card);border:2px solid var(--gold);border-radius:18px;padding:14px 20px;text-decoration:none;transition:background .2s}
+.fb:hover{background:#FBF3E2}
+.fb .f{width:60px;height:60px;border-radius:16px;background:#1877F2;color:#fff;display:grid;place-items:center;font:900 36px/1 var(--f-body);flex:none}
+.fb .go{margin-left:auto;font:700 20px/1 var(--f-body);color:#fff;background:var(--gold);padding:12px 16px;border-radius:12px;white-space:nowrap}
 .fb .qr{width:104px;height:104px;flex:none}
 .fb b{font-size:24px}
 .fb p{font-size:20px;color:var(--mute);line-height:1.45}
@@ -128,11 +140,11 @@ p{margin:0;line-height:1.6}
 .etabs button[aria-selected="true"]{color:#fff;border-color:transparent;background:var(--tc,var(--care))}
 
 /* 六步驟（直列） */
-.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
-.steps li{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:7px 14px}
 .steps .n{font:600 26px/1 var(--f-mono);color:var(--alert);text-align:center}
 .steps b{font:900 25px/1.2 var(--f-display)}
-.steps span{font-size:18px;color:var(--mute);display:block;margin-top:3px;line-height:1.4}
+.steps span{font-size:17px;color:var(--mute);display:block;margin-top:3px;line-height:1.4}
 
 /* 快問快答 */
 .quiz{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:200px;gap:20px}
@@ -184,6 +196,20 @@ p{margin:0;line-height:1.6}
 .qr img,.qr canvas{width:100%!important;height:100%!important;display:block;image-rendering:pixelated}
 .qr .fallback{font:500 12px/1.4 var(--f-mono);color:var(--mute);word-break:break-all;display:grid;place-items:center;height:100%}
 
+/* 資源連結 */
+.res{display:grid;grid-template-columns:1fr 1fr .9fr;gap:22px;align-items:start}
+.rescol{display:flex;flex-direction:column;gap:10px;min-width:0}
+.rh{font:600 17px/1 var(--f-mono);letter-spacing:.12em;margin-bottom:4px}
+.rl{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--c);border-radius:14px;padding:12px 16px;text-decoration:none;transition:transform .15s, box-shadow .15s}
+.rl:hover{transform:translateX(3px);box-shadow:0 10px 24px -18px rgba(18,43,39,.6)}
+.rl b{font:700 22px/1.3 var(--f-display)}
+.rl span{font-size:16px;color:var(--mute);grid-column:1}
+.rl i{font-style:normal;font:600 22px/1 var(--f-mono);color:var(--c);grid-row:1/3;grid-column:2}
+.rescol .deckqr{padding:16px;gap:6px;box-shadow:none}
+.rescol .deckqr .qr{width:150px;height:150px}
+.rescol .deckqr b{font-size:20px}
+.rescol .deckqr span{font-size:15px}
+.end a{color:#DDEBE6}
 /* 結尾 */
 .end{background:var(--ink);color:#EEF4F1}
 .end h2{font-size:104px;color:#fff}
@@ -221,7 +247,7 @@ body.list #viewport{position:static;overflow:visible}
 body.list #stage{position:static;width:auto;height:auto;transform:none!important;padding-left:max(14px, env(safe-area-inset-left,0px));padding-right:max(14px, env(safe-area-inset-right,0px));padding-block:14px 90px;display:flex;flex-direction:column;gap:14px}
 body.list .slide{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;padding:26px 18px 30px;border-radius:22px;border:1px solid var(--line);gap:18px;min-width:0;justify-content:flex-start;scroll-margin-top:14px}
 body.list .slide.cover{background:var(--care-soft)}
-body.list .grid2,body.list .grid3,body.list .demo,body.list .speaker,body.list .quiz,body.list .take,body.list .compare,body.list .lessons{grid-template-columns:1fr!important}
+body.list .covergrid,body.list .res,body.list .grid2,body.list .grid3,body.list .demo,body.list .speaker,body.list .quiz,body.list .take,body.list .compare,body.list .lessons{grid-template-columns:1fr!important}
 body.list .flow{grid-template-columns:1fr 1fr}
 body.list .quiz{grid-auto-rows:auto}
 body.list .card{min-height:190px;display:grid}
@@ -236,9 +262,14 @@ body.list .chip{font-size:12px}
 body.list .award{font-size:16px;padding:8px 14px 8px 8px}
 body.list .medal{width:28px;height:28px;font-size:14px}
 body.list .who{font-size:24px} body.list .what{font-size:16px}
-body.list .photo{width:100%;max-width:320px;height:360px;justify-self:center}
+body.list .photo{width:100%;max-width:340px;height:auto;aspect-ratio:1;justify-self:center}
+body.list .covergrid .deckqr{display:none} body.list .deckqr .qr{width:150px;height:150px} body.list .deckqr b{font-size:18px} body.list .deckqr span{font-size:14px}
+body.list .covertext{gap:18px}
+body.list .golink{font-size:17px;padding:12px 16px}
+body.list .fb{flex-wrap:wrap} body.list .fb .f{width:48px;height:48px;font-size:28px} body.list .fb .go{font-size:16px;margin-left:0}
+body.list .rl b{font-size:18px} body.list .rl span{font-size:14px}
 body.list .roles{font-size:18px}
-body.list .fb b{font-size:18px} body.list .fb p{font-size:15px} body.list .fb .qr{width:84px;height:84px}
+body.list .fb b{font-size:18px} body.list .fb p{font-size:15px}
 body.list .tag{font-size:15px}
 body.list .scene q{font-size:22px}
 body.list .thesis{font-size:24px}
@@ -274,19 +305,29 @@ body.list #nav .more,body.list #help{display:none}
 <div id="viewport"><div id="stage">
 
 <!-- 1 封面 -->
-<section class="slide cover" data-min="0.5" data-note="開場 30 秒。謝謝優照護與中華高齡專業照護訓練協會。一句話點題：「今天 20 分鐘，我只講三個能直接帶回去用的工具，最後送大家五個教案。」">
-  <div class="award"><span class="medal">★</span>2026 高照之心表揚大會　老師真會獎</div>
-  <h1>AI 輔助於<em>照顧、復能</em><br>以及<em>異常事件</em>資料庫之應用</h1>
-  <p class="lead">把專業放進每一位照顧夥伴的口袋：三個免費、手機就能開的網頁工具。</p>
-  <div>
-    <div class="who">鍾孟修　職能治療師</div>
-    <div class="what">愛迪樂有限公司 執行長｜愛迪樂居家職能治療所 所長</div>
+<section class="slide cover" data-min="0.5" data-note="開場 30 秒。先請大家掃右邊 QR，把整份簡報帶走，後面所有網站點了就開。謝謝優照護與中華高齡專業照護訓練協會。一句話點題：「今天 20 分鐘，我只講三個能直接帶回去用的工具，最後送大家五個教案。」">
+  <div class="covergrid">
+    <div class="covertext">
+      <div class="award"><span class="medal">★</span>2026 高照之心表揚大會　老師真會獎</div>
+      <h1>AI 輔助於<em>照顧、復能</em><br>以及<em>異常事件</em><br>資料庫之應用</h1>
+      <p class="lead">三個免費、手機就能開的網頁工具，<br>把專業放進每一位照顧夥伴的口袋。</p>
+      <div>
+        <div class="who">鍾孟修　職能治療師</div>
+        <div class="what">愛迪樂有限公司 執行長｜愛迪樂居家職能治療所 所長</div>
+      </div>
+    </div>
+    <a class="deckqr" href="https://mattsue1003.github.io/ai-care-database-talk/" target="_blank" rel="noopener">
+      <div class="qr" data-qr="https://mattsue1003.github.io/ai-care-database-talk/"></div>
+      <b>先掃這個，帶走整份簡報</b>
+      <span>簡報裡的網站、教案、粉專，點了就能直接開啟</span>
+      <span class="u">mattsue1003.github.io/ai-care-database-talk</span>
+    </a>
   </div>
   <div class="foot"><span>2026.11.01　集思台大會議中心 蘇格拉底廳</span><span>主辦：優照護 × 中華高齡專業照護訓練協會</span></div>
 </section>
 
 <!-- 2 講師 -->
-<section class="slide" data-min="1" data-note="1 分鐘。不念頭銜，挑一句：「我是在案家跑的職能治療師，這些工具都是從現場問題長出來的。」邀請大家掃 QR 追蹤粉專，每天都有教案、專業文章，留言就能拿。">
+<section class="slide" data-min="1" data-note="1 分鐘。不念頭銜，挑一句：「我是在案家跑的職能治療師，這些工具都是從現場問題長出來的。」邀請大家點「前往粉專」按讚追蹤，每天都有教案、專業文章，留言就能拿。">
   <div class="speaker">
     <div class="photo"><img src="speaker.jpg" alt="鍾孟修 職能治療師" onerror="this.remove()"><div class="mono">孟修</div></div>
     <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
@@ -299,10 +340,11 @@ body.list #nav .more,body.list #help{display:none}
         <li>中華高齡專業照護訓練協會　理事</li>
       </ul>
       <div class="tags"><span class="tag">復能</span><span class="tag">健康促進</span><span class="tag">教學</span><span class="tag">AI</span><span class="tag">失智症復健</span><span class="tag">中風復健</span><span class="tag">體智能</span><span class="tag">運動</span><span class="tag">身障</span><span class="tag">長照</span></div>
-      <div class="fb">
-        <div class="qr" data-qr="https://www.facebook.com/profile.php?id=100063748491881"></div>
+      <a class="fb" href="https://www.facebook.com/profile.php?id=100063748491881" target="_blank" rel="noopener">
+        <span class="f" aria-hidden="true">f</span>
         <div><b>按讚・追蹤・分享臉書粉專</b><p>每天都有教案、專業文章分享，留言即可取得！</p></div>
-      </div>
+        <span class="go">前往粉專 ↗</span>
+      </a>
     </div>
   </div>
 </section>
@@ -358,6 +400,7 @@ body.list #nav .more,body.list #help{display:none}
       </ul>
       <div class="stat"><div><b class="care">109</b><small>則現場做法</small></div><div><b class="care">17</b><small>類照顧＋復能主題</small></div></div>
       <p class="say">現場試：搜尋框打 <b>「移位」</b></p>
+      <a class="golink" style="--gc:var(--care)" href="https://mattsue1003.github.io/homecare-worker-handbook/" target="_blank" rel="noopener">開啟資料庫 ↗</a>
     </div>
     <div class="embed" data-src="https://mattsue1003.github.io/homecare-worker-handbook/" data-shot="shots/handbook.jpg" data-title="居服員專業資料庫｜照顧・復能運動・異常事件・法律"></div>
   </div>
@@ -398,7 +441,8 @@ body.list #nav .more,body.list #help{display:none}
         <button type="button" role="tab" aria-selected="true" data-src="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" data-shot="shots/aids.jpg" data-title="長照輔具資料庫｜依功能、GMFCS、食衣住行樂查詢">輔具資料庫</button>
         <button type="button" role="tab" aria-selected="false" data-src="https://mattsue1003.github.io/longtermcare/longtermcare.html" data-shot="shots/subsidy.jpg" data-title="生活魔法師｜長照・身障・輔具補助查詢系統">補助查詢</button>
       </div>
-      <p class="say" style="font-size:18px">補助資料依身障輔具補助基準表（242 項）與長照給付辦法附表（115/7/1 施行）整理，以主管機關最新公告為準。</p>
+      <a class="golink" style="--gc:var(--aid)" href="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" target="_blank" rel="noopener">開啟這個網站 ↗</a>
+      <p class="say" style="font-size:17px">補助資料依身障輔具補助基準表（242 項）與長照給付辦法附表（115/7/1 施行）整理，以主管機關最新公告為準。</p>
     </div>
     <div class="embed" data-src="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" data-shot="shots/aids.jpg" data-title="長照輔具資料庫｜依功能、GMFCS、食衣住行樂查詢"></div>
   </div>
@@ -495,7 +539,8 @@ body.list #nav .more,body.list #help{display:none}
     <div class="side">
       <h3 id="lessonName" class="play" style="font-size:36px">台灣好味島</h3>
       <p id="lessonDesc" style="font-size:23px;line-height:1.6">走一圈台灣，吃一圈台灣！22 縣市的名產和景點做成一座 3D 小島，點一下就去旅行，還有任務模式可以猜謎闖關。</p>
-      <p class="say">更多教案每天在<b>臉書粉專</b>分享，留言即可取得。</p>
+      <a class="golink" style="--gc:var(--play)" href="https://mattsue1003.github.io/taiwan-taste-island/" target="_blank" rel="noopener">開啟這個教案 ↗</a>
+      <p class="say">更多教案每天在<a href="https://www.facebook.com/profile.php?id=100063748491881" target="_blank" rel="noopener"><b>臉書粉專</b></a>分享，留言即可取得。</p>
     </div>
     <div class="embed" data-src="https://mattsue1003.github.io/taiwan-taste-island/" data-shot="shots/island.jpg" data-title="台灣好味島"></div>
   </div>
@@ -521,17 +566,36 @@ body.list #nav .more,body.list #help{display:none}
   </div>
 </section>
 
-<!-- 14 帶走 -->
-<section class="slide" data-min="0.75" data-note="45 秒。停在這頁讓大家拍照或掃 QR：三個工具都免費，歡迎分享給單位夥伴；教案在粉專留言就能拿。">
+<!-- 14 資源 -->
+<section class="slide" data-min="0.75" data-note="45 秒。今天提到的網站都在這一頁，點了就開。拿到這份簡報的人不用再掃 QR，歡迎分享給單位夥伴；教案在粉專留言就能拿。">
   <div class="head">
-    <div class="eyebrow">現在就掃，帶回單位</div>
-    <h2>拍照、掃描、分享給你的夥伴</h2>
+    <div class="eyebrow">所有資源，點了就開</div>
+    <h2>今天提到的網站，<span class="care">都在這裡</span></h2>
   </div>
-  <div class="take">
-    <a class="panel" href="https://mattsue1003.github.io/homecare-worker-handbook/" target="_blank" rel="noopener"><div class="qr" data-qr="https://mattsue1003.github.io/homecare-worker-handbook/"></div><h3 class="care">照顧・復能・異常</h3><p>居服員專業資料庫</p></a>
-    <a class="panel" href="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" target="_blank" rel="noopener"><div class="qr" data-qr="https://mattsue1003.github.io/long-term-care-assistive-devices-database/"></div><h3 class="aid">長照輔具資料庫</h3><p>功能・GMFCS・食衣住行樂</p></a>
-    <a class="panel" href="https://mattsue1003.github.io/longtermcare/" target="_blank" rel="noopener"><div class="qr" data-qr="https://mattsue1003.github.io/longtermcare/"></div><h3 class="aid">輔具補助查詢</h3><p>生活魔法師入口</p></a>
-    <a class="panel" href="https://www.facebook.com/profile.php?id=100063748491881" target="_blank" rel="noopener"><div class="qr" data-qr="https://www.facebook.com/profile.php?id=100063748491881"></div><h3 class="gold">臉書粉專</h3><p>每天教案與專業文章，留言即可取得</p></a>
+  <div class="res">
+    <div class="rescol">
+      <span class="rh care">三個工具</span>
+      <a class="rl" style="--c:var(--care)" href="https://mattsue1003.github.io/homecare-worker-handbook/" target="_blank" rel="noopener"><b>照顧・復能・異常事件</b><span>居服員專業資料庫，一框搜全部</span><i>↗</i></a>
+      <a class="rl" style="--c:var(--aid)" href="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" target="_blank" rel="noopener"><b>長照輔具資料庫</b><span>功能、GMFCS、食衣住行樂查詢</span><i>↗</i></a>
+      <a class="rl" style="--c:var(--aid)" href="https://mattsue1003.github.io/longtermcare/" target="_blank" rel="noopener"><b>輔具補助查詢</b><span>生活魔法師：長照・身障補助方向</span><i>↗</i></a>
+    </div>
+    <div class="rescol">
+      <span class="rh play">五個教案</span>
+      <a class="rl" style="--c:var(--play)" href="https://mattsue1003.github.io/taiwan-taste-island/" target="_blank" rel="noopener"><b>台灣好味島</b><span>22 縣市名產景點 3D 小島</span><i>↗</i></a>
+      <a class="rl" style="--c:var(--play)" href="https://mattsue1003.github.io/tangle-steps/" target="_blank" rel="noopener"><b>纏繞畫步驟示範</b><span>36 課動畫＋A4 學習單</span><i>↗</i></a>
+      <a class="rl" style="--c:var(--play)" href="https://mattsue1003.github.io/japan-dayservice-activity-videos/" target="_blank" rel="noopener"><b>日本日照團康影片庫</b><span>350 支影片中文整理</span><i>↗</i></a>
+      <a class="rl" style="--c:var(--play)" href="https://mattsue1003.github.io/old-song-guess/" target="_blank" rel="noopener"><b>懷舊金曲猜歌</b><span>20 首金曲互動</span><i>↗</i></a>
+      <a class="rl" style="--c:var(--play)" href="https://mattsue1003.github.io/oldstar-geuss-game/" target="_blank" rel="noopener"><b>老藝人猜猜看</b><span>30 位藝人照片互動</span><i>↗</i></a>
+    </div>
+    <div class="rescol">
+      <span class="rh gold">追蹤・分享</span>
+      <a class="rl" style="--c:var(--gold)" href="https://www.facebook.com/profile.php?id=100063748491881" target="_blank" rel="noopener"><b>臉書粉專</b><span>每天教案與專業文章，留言即可取得</span><i>↗</i></a>
+      <a class="deckqr" href="https://mattsue1003.github.io/ai-care-database-talk/" target="_blank" rel="noopener">
+        <div class="qr" data-qr="https://mattsue1003.github.io/ai-care-database-talk/"></div>
+        <b>分享這份簡報</b>
+        <span>把網址傳給夥伴，所有資源一次帶走</span>
+      </a>
+    </div>
   </div>
 </section>
 
@@ -541,7 +605,7 @@ body.list #nav .more,body.list #help{display:none}
   <h2>謝謝大家</h2>
   <p class="lead">這個獎屬於每一位在案家、一個人面對現場的照顧夥伴。</p>
   <div class="thanks"><span>優照護</span><span>中華高齡專業照護訓練協會</span><span>每一位照顧夥伴</span></div>
-  <div class="foot"><span>鍾孟修　職能治療師｜愛迪樂</span><span>臉書粉專：facebook.com/profile.php?id=100063748491881</span></div>
+  <div class="foot"><span>鍾孟修　職能治療師｜愛迪樂</span><a href="https://www.facebook.com/profile.php?id=100063748491881" target="_blank" rel="noopener">臉書粉專：按讚・追蹤・分享 ↗</a></div>
 </section>
 
 </div></div>
@@ -591,6 +655,7 @@ body.list #nav .more,body.list #help{display:none}
     el.dataset.src=src; el.dataset.shot=shot; el.dataset.title=title;
     el.querySelector('.url').textContent=src.replace(/^https?:\/\//,'');
     el.querySelector('.open').href=src; el.querySelector('.tapopen').href=src;
+    el.closest('.slide').querySelectorAll('.golink').forEach(a=>a.href=src);
     const img=el.querySelector('.shot'); img.src=shot; img.alt=title+' 畫面';
     const old=el.querySelector('iframe'); if(old) old.remove();
     const ld=el.querySelector('.loading'); if(ld) ld.remove();
