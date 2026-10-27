@@ -5,21 +5,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
 <style>
-/* Layout: 1280×720 投影畫布等比縮放；手機改為直向捲動的卡片列表。單一亮色投影配色（刻意不跟系統深色）。 */
+/* Layout: 1280×720 投影畫布等比縮放，內容垂直置中；工具頁「左重點、右即時網頁」。手機改為直向捲動卡片，嵌入改為截圖＋開啟按鈕。單一亮色投影配色。 */
 :root{
   color-scheme: light;
-  --paper:#F2F5F3;      /* 微帶綠的白，投影不刺眼 */
-  --ink:#122B27;        /* 深墨綠，主要文字 */
-  --mute:#5A6E69;       /* 次要文字 */
+  --paper:#F2F5F3;
+  --ink:#122B27;
+  --mute:#4F625D;
   --line:#D3DDD9;
-  --care:#0E6B5C;       /* 工具一：照顧與復能 */
-  --care-soft:#DCEDE8;
-  --aid:#2F4FB8;        /* 工具二：輔具 */
-  --aid-soft:#E1E6F7;
-  --alert:#D9481F;      /* 工具三：異常事件 */
-  --alert-soft:#FBE4DB;
-  --gold:#B8862B;       /* 獎項 */
   --card:#FFFFFF;
+  --care:#0E6B5C;  --care-soft:#DCEDE8;
+  --aid:#2F4FB8;   --aid-soft:#E1E6F7;
+  --alert:#D9481F; --alert-soft:#FBE4DB;
+  --play:#8A4FB0;  --play-soft:#EFE4F6;
+  --gold:#B8862B;
   --f-display:"Chiron GoRound TC","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
@@ -28,249 +26,279 @@
 html,body{height:100%}
 body{background:var(--paper);color:var(--ink);font-family:var(--f-body);overflow:hidden}
 a{color:inherit}
+button{font:inherit;color:inherit}
 :focus-visible{outline:3px solid var(--aid);outline-offset:3px;border-radius:6px}
 
 /* ---------- 舞台 ---------- */
 #viewport{position:fixed;inset:0;overflow:hidden;background:var(--paper)}
 #stage{width:1280px;height:720px;position:absolute;left:50%;top:50%;transform-origin:center center}
-.slide{position:absolute;inset:0;padding:56px 72px 64px;display:flex;flex-direction:column;gap:22px;
-  opacity:0;visibility:hidden;transition:opacity .35s ease, transform .35s ease;transform:translateX(18px)}
+.slide{position:absolute;inset:0;padding:44px 64px 52px;display:flex;flex-direction:column;justify-content:center;gap:26px;
+  opacity:0;visibility:hidden;transition:opacity .3s ease, transform .3s ease;transform:translateX(16px)}
 .slide.on{opacity:1;visibility:visible;transform:none}
+.slide.fill{justify-content:flex-start}
 @media (prefers-reduced-motion:reduce){.slide{transition:none;transform:none}}
 
-.eyebrow{font:600 15px/1 var(--f-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mute);display:flex;gap:12px;align-items:center}
-.eyebrow .chip{padding:6px 10px;border-radius:999px;color:#fff;letter-spacing:.08em}
+.eyebrow{font:600 18px/1 var(--f-mono);letter-spacing:.12em;color:var(--mute);display:flex;gap:12px;align-items:center}
+.chip{padding:7px 12px;border-radius:999px;color:#fff;letter-spacing:.06em;font:600 16px/1 var(--f-mono)}
 h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:.01em}
-h2{font-size:50px;line-height:1.15;font-weight:900}
-h3{font-size:26px;line-height:1.3;font-weight:700}
-p{margin:0;line-height:1.65}
-.lead{font-size:24px;color:var(--mute);max-width:46em}
-.big{font-size:28px;line-height:1.55}
-.care{color:var(--care)} .aid{color:var(--aid)} .alert{color:var(--alert)} .gold{color:var(--gold)}
-.bg-care{background:var(--care)} .bg-aid{background:var(--aid)} .bg-alert{background:var(--alert)}
-.grow{flex:1;min-height:0}
-.row{display:flex;gap:24px;align-items:stretch}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
-.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-.panel{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px 26px;display:flex;flex-direction:column;gap:10px;min-width:0}
-.tag{display:inline-block;font-size:17px;padding:5px 12px;border-radius:999px;background:var(--care-soft);color:var(--care);font-weight:500}
-.tags{display:flex;flex-wrap:wrap;gap:8px}
-.num{font:600 64px/1 var(--f-mono);font-variant-numeric:tabular-nums}
-.unit{font-size:20px;color:var(--mute);margin-left:6px;font-family:var(--f-body)}
-.btn{display:inline-flex;align-items:center;gap:10px;font:700 20px/1 var(--f-body);padding:14px 22px;border-radius:12px;border:2px solid currentColor;background:transparent;cursor:pointer;text-decoration:none}
-.btn.solid{color:#fff;border-color:transparent}
-.btn:hover{filter:brightness(1.08)}
-.btnrow{display:flex;gap:14px;flex-wrap:wrap}
-.foot{position:absolute;left:72px;right:72px;bottom:24px;display:flex;justify-content:space-between;font:500 14px/1 var(--f-mono);color:var(--mute);letter-spacing:.06em}
+h2{font-size:56px;line-height:1.16;font-weight:900}
+h3{font-size:32px;line-height:1.3;font-weight:700}
+p{margin:0;line-height:1.6}
+.lead{font-size:28px;color:var(--mute);line-height:1.55}
+.head{display:flex;flex-direction:column;gap:14px}
+.care{color:var(--care)} .aid{color:var(--aid)} .alert{color:var(--alert)} .gold{color:var(--gold)} .play{color:var(--play)}
+.bg-care{background:var(--care)} .bg-aid{background:var(--aid)} .bg-alert{background:var(--alert)} .bg-play{background:var(--play)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 30px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.panel h3{font-size:34px}
+.panel p{font-size:24px;color:var(--mute)}
+.tag{display:inline-block;font-size:20px;padding:6px 14px;border-radius:999px;background:var(--care-soft);color:var(--care);font-weight:500}
+.tags{display:flex;flex-wrap:wrap;gap:10px}
+.foot{position:absolute;left:64px;right:64px;bottom:22px;display:flex;justify-content:space-between;gap:16px;font:500 15px/1.3 var(--f-mono);color:var(--mute);letter-spacing:.04em}
 
-/* ---------- 1 封面 ---------- */
-.cover{background:
-  radial-gradient(900px 500px at 105% -10%, var(--care-soft), transparent 60%),
-  radial-gradient(700px 420px at -10% 110%, var(--aid-soft), transparent 60%), var(--paper)}
-.cover h1{font-size:68px;line-height:1.18;font-weight:900;max-width:15em}
+/* ---------- 封面 ---------- */
+.cover{background:radial-gradient(900px 520px at 108% -12%, var(--care-soft), transparent 60%),radial-gradient(760px 440px at -12% 112%, var(--aid-soft), transparent 60%),var(--paper);gap:30px}
+.cover h1{font-size:76px;line-height:1.16;font-weight:900}
 .cover h1 em{font-style:normal;background:linear-gradient(transparent 62%, #F6D9A3 62%)}
-.award{display:inline-flex;align-items:center;gap:14px;border:2px solid var(--gold);color:var(--gold);border-radius:999px;padding:10px 20px 10px 12px;font:700 20px/1 var(--f-display);align-self:flex-start}
-.award .medal{width:34px;height:34px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;font:700 16px/1 var(--f-mono)}
-.byline{display:flex;align-items:center;gap:18px;margin-top:auto}
-.byline .who{font:700 30px/1.2 var(--f-display)}
-.byline .what{font-size:19px;color:var(--mute)}
+.award{display:inline-flex;align-items:center;gap:14px;border:2px solid var(--gold);color:var(--gold);border-radius:999px;padding:10px 22px 10px 12px;font:700 24px/1 var(--f-display);align-self:flex-start}
+.medal{width:38px;height:38px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;font:700 18px/1 var(--f-mono)}
+.who{font:900 36px/1.2 var(--f-display)}
+.what{font-size:22px;color:var(--mute);margin-top:6px}
 
-/* ---------- 2 講師 ---------- */
-.speaker{display:grid;grid-template-columns:340px 1fr;gap:48px;align-items:center;flex:1;min-height:0}
-.photo{width:340px;height:400px;border-radius:24px;overflow:hidden;background:var(--care-soft);position:relative;box-shadow:0 18px 40px -22px rgba(18,43,39,.5)}
+/* ---------- 講師 ---------- */
+.speaker{display:grid;grid-template-columns:380px 1fr;gap:56px;align-items:center}
+.photo{width:380px;height:450px;border-radius:26px;overflow:hidden;background:var(--care-soft);position:relative;box-shadow:0 20px 44px -24px rgba(18,43,39,.55)}
 .photo img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;object-position:50% 35%;display:block}
 .photo .mono{position:absolute;inset:0;display:grid;place-items:center;font:900 96px/1 var(--f-display);color:var(--care)}
-.roles{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:23px}
+.roles{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;font-size:26px}
 .roles li{display:flex;gap:14px;align-items:baseline}
-.roles li::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--care);flex:none;transform:translateY(-3px)}
-.fb{display:flex;gap:18px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px;margin-top:6px}
-.fb .qr{width:96px;height:96px;flex:none}
-.fb b{font-size:20px}
-.fb p{font-size:17px;color:var(--mute);line-height:1.5}
+.roles li::before{content:"";width:10px;height:10px;border-radius:2px;background:var(--care);flex:none;transform:translateY(-4px)}
+.fb{display:flex;gap:20px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px 20px}
+.fb .qr{width:104px;height:104px;flex:none}
+.fb b{font-size:24px}
+.fb p{font-size:20px;color:var(--mute);line-height:1.45}
 
-/* ---------- 3 痛點 ---------- */
-.scene{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px;display:flex;flex-direction:column;gap:14px}
-.scene .t{font:600 15px/1 var(--f-mono);letter-spacing:.1em;color:var(--mute)}
-.scene q{font:700 27px/1.45 var(--f-display);quotes:"「" "」"}
-.thesis{margin-top:auto;display:flex;align-items:center;gap:22px;font:900 40px/1.25 var(--f-display)}
+/* ---------- 痛點 ---------- */
+.scene{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:16px}
+.scene .t{font:600 17px/1 var(--f-mono);letter-spacing:.1em}
+.scene q{font:700 32px/1.4 var(--f-display);quotes:"「" "」"}
+.thesis{display:flex;align-items:center;gap:22px;flex-wrap:wrap;font:900 42px/1.25 var(--f-display)}
 .thesis .arrow{font-family:var(--f-mono);color:var(--gold)}
 
-/* ---------- 4 地圖 ---------- */
-.tool{border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:14px;color:var(--ink);background:var(--card);border:1px solid var(--line);position:relative;overflow:hidden}
-.tool::after{content:"";position:absolute;left:0;top:0;right:0;height:8px;background:var(--c)}
-.tool .k{font:600 16px/1 var(--f-mono);letter-spacing:.12em;color:var(--c)}
-.tool h3{font-size:30px}
-.tool p{font-size:19px;color:var(--mute)}
-.tool .meta{margin-top:auto;font:600 18px/1.4 var(--f-mono);color:var(--c)}
+/* ---------- 工具總覽卡（含截圖） ---------- */
+.tool{border-radius:22px;background:var(--card);border:1px solid var(--line);overflow:hidden;display:flex;flex-direction:column;color:var(--ink);cursor:pointer;text-align:left;padding:0;transition:transform .2s, box-shadow .2s}
+.tool:hover{transform:translateY(-3px);box-shadow:0 18px 36px -24px rgba(18,43,39,.5)}
+.tool .thumb{width:100%;aspect-ratio:16/10;max-width:100%;background:var(--paper) center top/cover no-repeat;border-bottom:6px solid var(--c)}
+.tool .tx{padding:20px 24px 24px;display:flex;flex-direction:column;gap:8px}
+.tool .k{font:600 17px/1 var(--f-mono);letter-spacing:.12em;color:var(--c)}
+.tool h3{font-size:31px}
+.tool p{font-size:22px;color:var(--mute);line-height:1.5}
+.tool .meta{font:600 20px/1.3 var(--f-body);color:var(--c)}
 
-/* ---------- 工具頁 ---------- */
-.split{display:grid;grid-template-columns:1.05fr .95fr;gap:36px;flex:1;min-height:0}
-.feature{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
-.feature li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;font-size:22px;line-height:1.5}
-.feature .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font:700 18px/1 var(--f-mono);color:#fff}
-.feature small{display:block;font-size:17px;color:var(--mute)}
-.mock{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 22px 50px -30px rgba(18,43,39,.45)}
-.mock .bar{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);font:500 14px/1 var(--f-mono);color:var(--mute)}
-.mock .bar i{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
-.mock .bar span{margin-left:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.mock .body{padding:20px;display:flex;flex-direction:column;gap:12px;flex:1;min-height:0}
-.search{border:2px solid var(--line);border-radius:12px;padding:12px 16px;font-size:19px;color:var(--mute);display:flex;gap:10px}
-.search b{color:var(--ink);font-weight:500}
-.entry{border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
-.entry h4{margin:0;font:700 20px/1.3 var(--f-display)}
-.entry p{font-size:16px;color:var(--mute);line-height:1.5}
-.entry .copy{align-self:flex-start;font:600 14px/1 var(--f-mono);padding:7px 10px;border-radius:8px;background:var(--care-soft);color:var(--care)}
-.stat{display:flex;gap:28px;flex-wrap:wrap}
-.stat div{display:flex;flex-direction:column;gap:6px}
-.stat .num{font-size:48px}
-.stat small{font-size:17px;color:var(--mute)}
+/* ---------- 工具頁：左重點、右即時畫面 ---------- */
+.demo{display:grid;grid-template-columns:400px 1fr;gap:32px;flex:1;min-height:0}
+.side{display:flex;flex-direction:column;gap:20px;min-width:0;justify-content:center}
+.points{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:18px}
+.points li{display:grid;grid-template-columns:46px 1fr;gap:14px;align-items:start;font:700 26px/1.35 var(--f-display)}
+.points .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font:600 19px/1 var(--f-mono);color:#fff}
+.points small{display:block;font:400 20px/1.5 var(--f-body);color:var(--mute);margin-top:4px}
+.stat{display:flex;gap:28px}
+.stat div{display:flex;flex-direction:column;gap:4px}
+.stat b{font:600 52px/1 var(--f-mono);font-variant-numeric:tabular-nums}
+.stat small{font-size:19px;color:var(--mute)}
+.say{font-size:21px;line-height:1.55;background:var(--card);border:1px dashed var(--line);border-radius:14px;padding:14px 18px;color:var(--mute)}
+.say b{color:var(--ink)}
 
-/* 六步驟 */
-.steps{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;flex:1;min-height:0;align-content:start}
-.step{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px;display:flex;flex-direction:column;gap:12px;position:relative}
-.step .n{font:600 46px/1 var(--f-mono);color:var(--alert)}
-.step b{font:900 30px/1.2 var(--f-display)}
-.step p{font-size:17px;color:var(--mute);line-height:1.5}
-.step:not(:last-child)::after{content:"→";position:absolute;right:-13px;top:28px;font:600 20px/1 var(--f-mono);color:var(--alert);background:var(--paper);padding:2px 0}
-.callout{background:var(--alert-soft);border-radius:16px;padding:18px 24px;font-size:22px;line-height:1.5;display:flex;gap:16px;align-items:center}
-.callout b{color:var(--alert)}
+.embed{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;min-height:0;min-width:0;box-shadow:0 24px 50px -32px rgba(18,43,39,.5)}
+.ebar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line);font:500 14px/1 var(--f-mono);color:var(--mute)}
+.ebar i{width:11px;height:11px;border-radius:50%;background:var(--line);display:block;flex:none}
+.ebar .url{margin-left:6px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ebar button,.ebar a{font:600 14px/1 var(--f-body);padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+.ebar button:hover,.ebar a:hover{background:var(--care-soft)}
+.eview{position:relative;flex:1;min-height:0;background:var(--paper)}
+.eview .shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.eview iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;opacity:0;transition:opacity .3s}
+.eview iframe.ready{opacity:1}
+.eview .loading{position:absolute;right:12px;bottom:12px;font:600 13px/1 var(--f-mono);background:var(--ink);color:#fff;padding:7px 10px;border-radius:8px;z-index:2}
+.eview .tapopen{display:none}
+
+.etabs{display:flex;gap:8px;flex-wrap:wrap}
+.etabs button{font:700 19px/1 var(--f-body);padding:11px 16px;border-radius:12px;border:2px solid var(--line);background:var(--card);cursor:pointer}
+.etabs button[aria-selected="true"]{color:#fff;border-color:transparent;background:var(--tc,var(--care))}
+
+/* 六步驟（直列） */
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:9px}
+.steps li{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 14px}
+.steps .n{font:600 26px/1 var(--f-mono);color:var(--alert);text-align:center}
+.steps b{font:900 25px/1.2 var(--f-display)}
+.steps span{font-size:18px;color:var(--mute);display:block;margin-top:3px;line-height:1.4}
 
 /* 快問快答 */
-.quiz{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;min-height:0}
-.card{perspective:1400px;cursor:pointer;border:0;padding:0;background:none;text-align:left;font:inherit;color:inherit}
+.quiz{display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:200px;gap:20px}
+.card{perspective:1400px;cursor:pointer;border:0;padding:0;background:none;text-align:left}
 .card .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
 .card.flip .in{transform:rotateY(180deg)}
-.card .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:18px;padding:22px 26px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.card .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;padding:22px 28px;display:flex;flex-direction:column;gap:10px;justify-content:center}
 .card .front{background:var(--card);border:2px solid var(--line)}
 .card .back{background:var(--alert);color:#fff;transform:rotateY(180deg)}
-.card .q{font:700 26px/1.4 var(--f-display)}
-.card .hint{font:600 14px/1 var(--f-mono);color:var(--mute);letter-spacing:.08em}
-.card .back b{font:900 28px/1.3 var(--f-display)}
-.card .back p{font-size:19px;line-height:1.5;opacity:.95}
+.card .q{font:700 30px/1.35 var(--f-display)}
+.card .hint{font:600 16px/1 var(--f-mono);color:var(--mute);letter-spacing:.08em;display:flex;justify-content:space-between}
+.card .back b{font:900 32px/1.25 var(--f-display)}
+.card .back p{font-size:22px;line-height:1.45}
 @media (prefers-reduced-motion:reduce){.card .in{transition:none}}
 
-/* 5W1H */
-.w5{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-.w5 div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:6px}
-.w5 b{font:600 26px/1 var(--f-mono);color:var(--care)}
-.w5 span{font-size:18px}
-.prompt{background:var(--ink);color:#EAF2EF;border-radius:16px;padding:22px 26px;font:500 19px/1.7 var(--f-mono);position:relative}
-.prompt .lab{font:600 13px/1 var(--f-mono);letter-spacing:.14em;color:#9DB8B0;margin-bottom:10px;display:block}
-.prompt mark{background:#F6D9A3;color:var(--ink);padding:0 4px;border-radius:4px}
-.compare{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.compare div{border-radius:14px;padding:16px 20px;font-size:19px;line-height:1.55}
-.compare .bad{background:#EEE;color:#6b6b6b;text-decoration:line-through;text-decoration-color:var(--alert)}
+/* 紀錄對照 */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.compare div{border-radius:16px;padding:20px 24px;font-size:24px;line-height:1.5}
+.compare small{display:block;font:600 16px/1 var(--f-mono);letter-spacing:.1em;margin-bottom:10px}
+.compare .bad{background:#ECEDEC;color:#5f6563}
+.compare .bad span{text-decoration:line-through;text-decoration-color:var(--alert)}
 .compare .good{background:var(--care-soft)}
+.prompt{background:var(--ink);color:#EAF2EF;border-radius:18px;padding:24px 28px;font:500 24px/1.6 var(--f-body)}
+.prompt .lab{font:600 15px/1 var(--f-mono);letter-spacing:.14em;color:#9DB8B0;margin-bottom:10px;display:block}
+.prompt mark{background:#F6D9A3;color:var(--ink);padding:0 5px;border-radius:4px}
+
+/* 教案總覽 */
+.lessons{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.lesson{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;padding:0;text-align:left;transition:transform .2s, box-shadow .2s}
+.lesson:hover{transform:translateY(-3px);box-shadow:0 18px 36px -24px rgba(18,43,39,.5)}
+.lesson .thumb{width:100%;aspect-ratio:4/3;max-width:100%;background:var(--play-soft) center top/cover no-repeat;border-bottom:5px solid var(--play)}
+.lesson .tx{padding:14px 16px 18px;display:flex;flex-direction:column;gap:6px}
+.lesson b{font:900 23px/1.3 var(--f-display)}
+.lesson span{font-size:18px;color:var(--mute);line-height:1.45}
+.lesson em{font:600 15px/1 var(--f-mono);color:var(--play);font-style:normal}
 
 /* 我怎麼做 */
 .flow{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
-.flow div{border-top:6px solid var(--care);background:var(--card);border-radius:0 0 14px 14px;padding:16px;display:flex;flex-direction:column;gap:8px}
-.flow b{font:600 15px/1 var(--f-mono);color:var(--care)}
-.flow span{font:700 21px/1.35 var(--f-display)}
-.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.rules .panel b{font:900 26px/1.3 var(--f-display)}
-.rules .panel p{font-size:18px;color:var(--mute)}
+.flow div{border-top:6px solid var(--care);background:var(--card);border-radius:0 0 16px 16px;padding:18px 16px;display:flex;flex-direction:column;gap:10px}
+.flow b{font:600 16px/1 var(--f-mono);color:var(--care)}
+.flow span{font:700 24px/1.35 var(--f-display)}
 
 /* 帶走 */
-.take{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;flex:1;min-height:0}
-.take .panel{align-items:center;text-align:center;gap:12px;justify-content:flex-start}
-.take .qr{width:190px;height:190px;padding:10px;background:#fff;border-radius:14px;border:1px solid var(--line)}
-.take h3{font-size:23px}
-.take p{font-size:15px;color:var(--mute);word-break:break-all;line-height:1.4}
-.take a{text-decoration:none}
+.take{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.take .panel{align-items:center;text-align:center;gap:12px;text-decoration:none;padding:24px 18px}
+.take .qr{width:200px;height:200px;padding:10px;background:#fff;border-radius:14px;border:1px solid var(--line)}
+.take h3{font-size:26px}
+.take p{font-size:18px}
 .qr img,.qr canvas{width:100%!important;height:100%!important;display:block;image-rendering:pixelated}
 .qr .fallback{font:500 12px/1.4 var(--f-mono);color:var(--mute);word-break:break-all;display:grid;place-items:center;height:100%}
 
 /* 結尾 */
-.end{background:var(--ink);color:#EEF4F1;justify-content:center;align-items:flex-start}
-.end h2{font-size:92px;color:#fff}
-.end .lead{color:#B9CCC6;font-size:26px}
-.end .thanks{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
-.end .thanks span{border:1px solid #3B5A53;border-radius:999px;padding:10px 18px;font-size:20px}
+.end{background:var(--ink);color:#EEF4F1}
+.end h2{font-size:104px;color:#fff}
+.end .lead{color:#B9CCC6;font-size:30px}
+.end .thanks{display:flex;gap:12px;flex-wrap:wrap}
+.end .thanks span{border:1px solid #3B5A53;border-radius:999px;padding:12px 20px;font-size:23px}
 .end .foot{color:#86A39B}
 
-/* ---------- 控制列 ---------- */
-#hud{position:fixed;left:0;right:0;bottom:0;display:flex;align-items:center;gap:12px;
-  padding:10px max(16px, env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px));
-  font:600 14px/1 var(--f-mono);color:var(--mute);opacity:.0;transition:opacity .25s;z-index:5}
-#hud:hover,#hud:focus-within,body.hud #hud{opacity:1}
-#hud button{font:600 14px/1 var(--f-mono);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer}
-#hud .sp{flex:1}
-#progress{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:4px;background:var(--gold);width:0;transition:width .3s;z-index:5}
-#timer{position:fixed;right:max(16px, env(safe-area-inset-right,0px));top:calc(12px + env(safe-area-inset-top,0px));font:600 16px/1 var(--f-mono);padding:8px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);color:var(--ink);z-index:5;font-variant-numeric:tabular-nums}
+/* ---------- 控制 ---------- */
+#progress{position:fixed;left:0;top:env(safe-area-inset-top,0px);height:5px;background:var(--gold);width:0;transition:width .3s;z-index:5}
+#timer{position:fixed;right:max(16px, env(safe-area-inset-right,0px));top:calc(12px + env(safe-area-inset-top,0px));font:600 16px/1 var(--f-mono);padding:8px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line);color:var(--ink);z-index:5;font-variant-numeric:tabular-nums;cursor:pointer}
+#timer.run{border-color:var(--care)}
 #timer.warn{background:var(--alert);color:#fff;border-color:transparent}
-#notes{position:fixed;left:max(16px, env(safe-area-inset-left,0px));right:max(16px, env(safe-area-inset-right,0px));bottom:calc(56px + env(safe-area-inset-bottom,0px));max-width:760px;margin:0 auto;background:var(--ink);color:#EAF2EF;border-radius:14px;padding:16px 20px;font-size:17px;line-height:1.6;z-index:6;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
+#nav{position:fixed;right:max(16px, env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:8px;z-index:5;font:600 14px/1 var(--f-mono);color:var(--mute)}
+#nav button{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font:600 18px/1 var(--f-mono);display:grid;place-items:center;opacity:.85}
+#nav button:hover{background:var(--care-soft);opacity:1}
+#nav .count{padding:0 6px;font-variant-numeric:tabular-nums}
+#nav .more{width:auto;padding:0 12px;font-size:14px}
+#help{position:fixed;right:max(16px, env(safe-area-inset-right,0px));bottom:calc(68px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#EAF2EF;border-radius:14px;padding:16px 18px;font-size:15px;line-height:1.9;z-index:6;width:290px}
+#help kbd{font:600 13px/1 var(--f-mono);background:#2A4741;padding:3px 7px;border-radius:5px;margin-right:6px}
+#notes{position:fixed;left:max(16px, env(safe-area-inset-left,0px));right:max(16px, env(safe-area-inset-right,0px));bottom:calc(70px + env(safe-area-inset-bottom,0px));max-width:780px;margin:0 auto;background:var(--ink);color:#EAF2EF;border-radius:14px;padding:16px 20px;font-size:18px;line-height:1.6;z-index:6;box-shadow:0 20px 40px -20px rgba(0,0,0,.6)}
 #notes b{color:#F6D9A3;font-family:var(--f-mono)}
 
-/* ---------- 即時網頁展示 ---------- */
+/* 全螢幕展示 */
 #live{position:fixed;inset:0;z-index:10;background:var(--paper);display:flex;flex-direction:column}
-#live header{display:flex;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) 10px max(16px, env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);background:var(--card)}
+#live header{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) 10px max(16px, env(safe-area-inset-left,0px));border-bottom:1px solid var(--line);background:var(--card)}
 #live header b{font:700 18px/1.2 var(--f-display);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#live header a,#live header button{font:600 15px/1 var(--f-body);padding:10px 14px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
+#live header a,#live header button{font:600 15px/1 var(--f-body);padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer;text-decoration:none;white-space:nowrap}
 #live .wrap{position:relative;flex:1;min-height:0}
-#live .msg{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:var(--mute);font-size:18px;padding:24px;line-height:1.7}
-#live iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent}
+#live iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff}
 
-/* ---------- 手機：直向列表 ---------- */
+/* ---------- 手機／小螢幕：直向卡片 ---------- */
 body.list{overflow:auto}
-body.list #viewport{position:static;display:block;overflow:visible}
-body.list #stage{position:static;left:auto;top:auto;width:auto;height:auto;transform:none!important;padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px));padding-block:16px;display:flex;flex-direction:column;gap:16px}
-body.list .slide{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;padding:28px 20px 48px;border-radius:20px;border:1px solid var(--line);background:var(--paper);gap:16px;min-width:0}
+body.list #viewport{position:static;overflow:visible}
+body.list #stage{position:static;width:auto;height:auto;transform:none!important;padding-left:max(14px, env(safe-area-inset-left,0px));padding-right:max(14px, env(safe-area-inset-right,0px));padding-block:14px 90px;display:flex;flex-direction:column;gap:14px}
+body.list .slide{position:relative;inset:auto;opacity:1;visibility:visible;transform:none;padding:26px 18px 30px;border-radius:22px;border:1px solid var(--line);gap:18px;min-width:0;justify-content:flex-start;scroll-margin-top:14px}
 body.list .slide.cover{background:var(--care-soft)}
-body.list .slide.end{background:var(--ink)}
-body.list .grid2,body.list .grid3,body.list .grid4,body.list .split,body.list .speaker,body.list .quiz,body.list .take,body.list .rules,body.list .compare{grid-template-columns:1fr}
-body.list .steps,body.list .w5,body.list .flow{grid-template-columns:1fr 1fr}
-body.list .step::after{display:none}
-body.list h2{font-size:30px} body.list .cover h1{font-size:34px} body.list .end h2{font-size:48px}
-body.list .lead,body.list .big{font-size:18px}
-body.list .thesis{font-size:24px;flex-wrap:wrap}
-body.list .photo{width:100%;max-width:340px;height:340px}
-body.list .card{min-height:200px}
-body.list .scene q{font-size:21px}
-body.list .feature li{font-size:18px}
-body.list .num{font-size:44px}
-body.list .foot{left:20px;right:20px;bottom:16px;font-size:12px}
-body.list .take .qr{width:160px;height:160px}
-body.list .row{flex-direction:column}
-body.list #hud,body.list #progress,body.list #timer{display:none}
+body.list .grid2,body.list .grid3,body.list .demo,body.list .speaker,body.list .quiz,body.list .take,body.list .compare,body.list .lessons{grid-template-columns:1fr!important}
+body.list .flow{grid-template-columns:1fr 1fr}
+body.list .quiz{grid-auto-rows:auto}
+body.list .card{min-height:190px;display:grid}
+body.list .card .in{min-height:190px}
+body.list h2{font-size:29px}
+body.list h3,body.list .panel h3{font-size:23px}
+body.list .cover h1{font-size:33px}
+body.list .end h2{font-size:52px}
+body.list .lead,body.list .end .lead{font-size:18px}
+body.list .eyebrow{font-size:13px;flex-wrap:wrap}
+body.list .chip{font-size:12px}
+body.list .award{font-size:16px;padding:8px 14px 8px 8px}
+body.list .medal{width:28px;height:28px;font-size:14px}
+body.list .who{font-size:24px} body.list .what{font-size:16px}
+body.list .photo{width:100%;max-width:320px;height:360px;justify-self:center}
+body.list .roles{font-size:18px}
+body.list .fb b{font-size:18px} body.list .fb p{font-size:15px} body.list .fb .qr{width:84px;height:84px}
+body.list .tag{font-size:15px}
+body.list .scene q{font-size:22px}
+body.list .thesis{font-size:24px}
+body.list .tool h3{font-size:23px} body.list .tool p{font-size:17px} body.list .tool .meta{font-size:16px}
+body.list .points li{font-size:20px;grid-template-columns:40px 1fr} body.list .points .ic{width:40px;height:40px;font-size:16px}
+body.list .points small{font-size:16px}
+body.list .stat b{font-size:38px} body.list .stat small{font-size:15px}
+body.list .say{font-size:16px!important}
+body.list .eview{flex:none;aspect-ratio:16/11;max-width:100%}
+body.list .eview .tapopen{display:flex;position:absolute;right:12px;bottom:12px;z-index:3;font:700 16px/1 var(--f-body);padding:12px 16px;border-radius:12px;background:var(--ink);color:#fff;text-decoration:none;align-items:center;gap:6px}
+body.list .ebar .fsbtn{display:none}
+body.list .etabs button{font-size:15px;padding:10px 12px}
+body.list .steps b{font-size:20px} body.list .steps span{font-size:15px}
+body.list .card .q{font-size:22px} body.list .card .back b{font-size:23px} body.list .card .back p{font-size:16px}
+body.list .compare div{font-size:17px}
+body.list .prompt{font-size:16px}
+body.list .lesson{flex-direction:row}
+body.list .lesson .thumb{width:38%;flex:none;aspect-ratio:auto;border-bottom:0;border-right:5px solid var(--play)}
+body.list .lesson b{font-size:19px} body.list .lesson span{font-size:15px}
+body.list #lessonName{font-size:24px!important} body.list #lessonDesc{font-size:16px!important}
+body.list .flow span{font-size:18px}
+body.list .panel{padding:20px} body.list .panel p{font-size:17px}
+body.list .take .qr{width:170px;height:170px}
+body.list .end .thanks span{font-size:16px}
+body.list .foot{position:static;font-size:12px;flex-direction:column;gap:4px;margin-top:4px}
+body.list #timer,body.list #progress{display:none}
+body.list #nav .more,body.list #help{display:none}
 </style>
 
 <div id="progress"></div>
-<div id="timer" title="T：開始／暫停　R：歸零">20:00</div>
+<button id="timer" type="button" title="點一下或按 T：開始／暫停；R：歸零">20:00</button>
 
 <div id="viewport"><div id="stage">
 
 <!-- 1 封面 -->
-<section class="slide cover" data-min="0.5" data-note="開場 30 秒。先謝謝優照護與中華高齡專業照護訓練協會，接著一句話點題：「今天 20 分鐘，我只講三個能直接帶回去用的工具。」">
+<section class="slide cover" data-min="0.5" data-note="開場 30 秒。謝謝優照護與中華高齡專業照護訓練協會。一句話點題：「今天 20 分鐘，我只講三個能直接帶回去用的工具，最後送大家五個教案。」">
   <div class="award"><span class="medal">★</span>2026 高照之心表揚大會　老師真會獎</div>
-  <h1>AI 輔助於<em>照顧、復能</em>以及<em>異常事件</em>資料庫之應用</h1>
+  <h1>AI 輔助於<em>照顧、復能</em><br>以及<em>異常事件</em>資料庫之應用</h1>
   <p class="lead">把專業放進每一位照顧夥伴的口袋：三個免費、手機就能開的網頁工具。</p>
-  <div class="byline">
-    <div>
-      <div class="who">鍾孟修　職能治療師</div>
-      <div class="what">愛迪樂有限公司 執行長｜愛迪樂居家職能治療所 所長</div>
-    </div>
+  <div>
+    <div class="who">鍾孟修　職能治療師</div>
+    <div class="what">愛迪樂有限公司 執行長｜愛迪樂居家職能治療所 所長</div>
   </div>
   <div class="foot"><span>2026.11.01　集思台大會議中心 蘇格拉底廳</span><span>主辦：優照護 × 中華高齡專業照護訓練協會</span></div>
 </section>
 
 <!-- 2 講師 -->
-<section class="slide" data-min="1" data-note="1 分鐘。不念頭銜，挑一句：「我是在案家跑的職能治療師，這些工具都是從現場問題長出來的。」最後邀請大家掃 QR 追蹤粉專，每天都有教案、專業文章，留言就能拿。">
-  <div class="eyebrow">講師介紹</div>
+<section class="slide" data-min="1" data-note="1 分鐘。不念頭銜，挑一句：「我是在案家跑的職能治療師，這些工具都是從現場問題長出來的。」邀請大家掃 QR 追蹤粉專，每天都有教案、專業文章，留言就能拿。">
   <div class="speaker">
     <div class="photo"><img src="speaker.jpg" alt="鍾孟修 職能治療師" onerror="this.remove()"><div class="mono">孟修</div></div>
-    <div style="display:flex;flex-direction:column;gap:18px;min-width:0">
-      <h2>鍾孟修 <span style="font-size:30px;color:var(--mute);font-weight:700">職能治療師</span></h2>
+    <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
+      <div class="eyebrow">講師介紹</div>
+      <h2>鍾孟修 <span style="font-size:32px;color:var(--mute);font-weight:700">職能治療師</span></h2>
       <ul class="roles">
         <li>愛迪樂有限公司　執行長</li>
         <li>愛迪樂居家職能治療所　所長</li>
         <li>社團法人台灣生活復能健康促進協會　副理事長</li>
         <li>中華高齡專業照護訓練協會　理事</li>
       </ul>
-      <div class="tags">
-        <span class="tag">復能</span><span class="tag">健康促進</span><span class="tag">教學</span><span class="tag">AI</span><span class="tag">失智症復健</span><span class="tag">中風復健</span><span class="tag">體智能</span><span class="tag">運動</span><span class="tag">身障</span><span class="tag">長照</span>
-      </div>
+      <div class="tags"><span class="tag">復能</span><span class="tag">健康促進</span><span class="tag">教學</span><span class="tag">AI</span><span class="tag">失智症復健</span><span class="tag">中風復健</span><span class="tag">體智能</span><span class="tag">運動</span><span class="tag">身障</span><span class="tag">長照</span></div>
       <div class="fb">
         <div class="qr" data-qr="https://www.facebook.com/profile.php?id=100063748491881"></div>
         <div><b>按讚・追蹤・分享臉書粉專</b><p>每天都有教案、專業文章分享，留言即可取得！</p></div>
@@ -280,205 +308,205 @@ body.list #hud,body.list #progress,body.list #timer{display:none}
 </section>
 
 <!-- 3 痛點 -->
-<section class="slide" data-min="1.5" data-note="1 分半。三個場景用問的：「這種時候，你會打給誰？」讓台下舉手。收在一句：答案不能只在督導的腦袋裡。">
-  <div class="eyebrow">現場的三個瞬間</div>
-  <h2>居服員一個人在案家，最怕的不是做不到，<br>是<span class="alert">不知道下一步</span>。</h2>
+<section class="slide" data-min="1" data-note="1 分鐘。三個場景用問的：「這種時候，你會打給誰？」讓台下舉手。收在一句：答案不能只在督導的腦袋裡。">
+  <div class="head">
+    <div class="eyebrow">現場的三個瞬間</div>
+    <h2>居服員一個人在案家，<br>最怕的是<span class="alert">不知道下一步</span></h2>
+  </div>
   <div class="grid3">
-    <div class="scene"><span class="t">照顧＆復能</span><q>阿嬤說她自己會穿衣服，那我要幫還是不要幫？</q></div>
-    <div class="scene"><span class="t">輔具</span><q>家屬問：這張洗澡椅有補助嗎？找誰申請？</q></div>
-    <div class="scene"><span class="t">異常事件</span><q>阿公在浴室跌倒，督導電話打不通。</q></div>
+    <div class="scene"><span class="t care">照顧＆復能</span><q>阿嬤說她自己會穿衣服，那我要幫還是不要幫？</q></div>
+    <div class="scene"><span class="t aid">輔具</span><q>家屬問：這張洗澡椅有補助嗎？找誰申請？</q></div>
+    <div class="scene"><span class="t alert">異常事件</span><q>阿公在浴室跌倒，督導電話打不通。</q></div>
   </div>
   <div class="thesis"><span>答案不能只在督導腦袋裡</span><span class="arrow">→</span><span class="care">要在每個人的口袋裡</span></div>
 </section>
 
 <!-- 4 三個工具 -->
-<section class="slide" data-min="1" data-note="1 分鐘。三個顏色記住：綠色照顧復能、藍色輔具、紅色異常事件。全部免費、免登入、手機可開。">
-  <div class="eyebrow">今天帶走的三個工具</div>
-  <h2>一支手機，三個資料庫</h2>
-  <div class="grid3 grow">
-    <div class="tool" style="--c:var(--care)">
-      <span class="k">TOOL 1</span>
-      <h3>AI 照顧與復能資料庫</h3>
-      <p>居家服務照顧及復能重點提示，一個搜尋框即時檢索常見問題。</p>
-      <div class="meta">照顧 36 則＋復能 22 則</div>
-    </div>
-    <div class="tool" style="--c:var(--aid)">
-      <span class="k">TOOL 2</span>
-      <h3>輔具資料庫導覽</h3>
-      <p>常見日常生活輔具的應用與適配，連結長照與身障補助查詢。</p>
-      <div class="meta">食・衣・住・行・樂＋GMFCS 分級</div>
-    </div>
-    <div class="tool" style="--c:var(--alert)">
-      <span class="k">TOOL 3</span>
-      <h3>快速問題處理網頁</h3>
-      <p>異常事件處理流程步驟，與每一類事件的注意事項。</p>
-      <div class="meta">異常事件 29 則＋處理六步驟</div>
-    </div>
+<section class="slide" data-min="1" data-note="1 分鐘。三個顏色記住：綠色照顧復能、藍色輔具、紅色異常事件。全部免費、免登入、手機可開。點卡片可直接跳到該工具頁。">
+  <div class="head">
+    <div class="eyebrow">今天帶走的三個工具</div>
+    <h2>一支手機，三個資料庫</h2>
+  </div>
+  <div class="grid3">
+    <button class="tool" type="button" style="--c:var(--care)" data-goto="5">
+      <div class="thumb" style="background-image:url(shots/handbook.jpg)"></div>
+      <div class="tx"><span class="k">TOOL 1</span><h3>AI 照顧與復能資料庫</h3><p>照顧與復能重點，一個搜尋框即時查。</p><span class="meta">照顧 36 則＋復能 22 則</span></div>
+    </button>
+    <button class="tool" type="button" style="--c:var(--aid)" data-goto="7">
+      <div class="thumb" style="background-image:url(shots/aids.jpg)"></div>
+      <div class="tx"><span class="k">TOOL 2</span><h3>輔具資料庫導覽</h3><p>生活輔具的應用適配，連結補助查詢。</p><span class="meta">109 項輔具・食衣住行樂</span></div>
+    </button>
+    <button class="tool" type="button" style="--c:var(--alert)" data-goto="8">
+      <div class="thumb" style="background-image:url(shots/handbook.jpg)"></div>
+      <div class="tx"><span class="k">TOOL 3</span><h3>快速問題處理網頁</h3><p>異常事件的處理步驟與注意事項。</p><span class="meta">異常事件 29 則＋六步驟</span></div>
+    </button>
   </div>
 </section>
 
-<!-- 5 工具一 -->
-<section class="slide" data-min="2" data-note="2 分鐘。按「現場展示」，在搜尋框打「移位」或「穿衣」示範即時檢索，再點開一則給大家看「一定要做／絕對不要／何時通報」。">
-  <div class="eyebrow"><span class="chip bg-care">TOOL 1</span>AI 照顧與復能資料庫</div>
-  <h2>照顧和復能，<span class="care">一個搜尋框</span>查完</h2>
-  <div class="split">
-    <div style="display:flex;flex-direction:column;gap:22px;min-width:0">
-      <ul class="feature">
-        <li><span class="ic bg-care">搜</span><div>四個資料庫一次搜<small>打「移位」「嗆到」「拒絕洗澡」，照顧、復能、異常、法律全部一起出來</small></div></li>
-        <li><span class="ic bg-care">卡</span><div>每則都是一張現場卡<small>正確做法、順序、禁忌、該通報的時機與法規依據</small></div></li>
-        <li><span class="ic bg-care">AI</span><div>每則附「複製 AI 提問」<small>想問得更深，複製就能貼到 AI，問法已幫你寫好</small></div></li>
+<!-- 5 工具一 即時 -->
+<section class="slide fill" data-min="2" data-note="2 分鐘。在右邊畫面的搜尋框打「移位」，示範四個資料庫一起出來；點開「床與輪椅之間移位」，給大家看做法、禁忌、通報時機和「複製 AI 提問」。">
+  <div class="head">
+    <div class="eyebrow"><span class="chip bg-care">TOOL 1</span>AI 照顧與復能資料庫</div>
+    <h2>照顧和復能，<span class="care">一個搜尋框</span>查完</h2>
+  </div>
+  <div class="demo">
+    <div class="side">
+      <ul class="points">
+        <li><span class="ic bg-care">搜</span><div>四個資料庫一次搜<small>照顧、復能、異常、法律一起出來</small></div></li>
+        <li><span class="ic bg-care">卡</span><div>每則都是現場卡<small>做法、禁忌、通報時機、法規依據</small></div></li>
+        <li><span class="ic bg-care">AI</span><div>附「複製 AI 提問」<small>問法寫好了，貼到 AI 就能深問</small></div></li>
       </ul>
-      <div class="stat">
-        <div><span class="num care">109</span><small>則現場用得上的做法</small></div>
-        <div><span class="num care">10</span><small>類照顧主題</small></div>
-        <div><span class="num care">7</span><small>類復能運動主題</small></div>
-      </div>
-      <div class="btnrow">
-        <button class="btn solid bg-care" data-live="https://mattsue1003.github.io/homecare-worker-handbook/" data-title="居服員專業資料庫｜照顧・復能運動・異常事件・法律">▶ 現場展示</button>
-        <a class="btn care" href="https://mattsue1003.github.io/homecare-worker-handbook/" target="_blank" rel="noopener">開新分頁 ↗</a>
-      </div>
+      <div class="stat"><div><b class="care">109</b><small>則現場做法</small></div><div><b class="care">17</b><small>類照顧＋復能主題</small></div></div>
+      <p class="say">現場試：搜尋框打 <b>「移位」</b></p>
     </div>
-    <div class="mock">
-      <div class="bar"><i></i><i></i><i></i><span>mattsue1003.github.io/homecare-worker-handbook</span></div>
-      <div class="body">
-        <div class="search">🔎 <b>移位</b></div>
-        <p style="font-size:15px;color:var(--mute)">跨四個資料庫，共 9 則</p>
-        <div class="entry"><h4>床與輪椅之間移位</h4><p>先鎖煞車、翹腳踏板、綁移位腰帶，用「站—轉—坐」而不是用抱的。</p><span class="copy">複製 AI 提問</span></div>
-        <div class="entry"><h4>協助行走與扶持技巧</h4><p>站在弱側稍後方，手放腰後或腰帶，讓他自己控制平衡。</p><span class="copy">複製 AI 提問</span></div>
-        <div class="tags"><span class="tag">移位與擺位</span><span class="tag">生活協助</span><span class="tag">異常事件</span></div>
-      </div>
-    </div>
+    <div class="embed" data-src="https://mattsue1003.github.io/homecare-worker-handbook/" data-shot="shots/handbook.jpg" data-title="居服員專業資料庫｜照顧・復能運動・異常事件・法律"></div>
   </div>
 </section>
 
 <!-- 6 復能 + AI 守則 -->
-<section class="slide" data-min="1.5" data-note="1 分半。復能一句話：不代勞。再講 AI 三守則，強調第三條：緊急先 119，AI 是事後整理用的。">
-  <div class="eyebrow"><span class="chip bg-care">TOOL 1</span>復能放進日常，AI 用得安全</div>
-  <h2>復能的關鍵字只有三個：<span class="care">不代勞</span></h2>
+<section class="slide" data-min="1" data-note="1 分鐘。復能一句話：不代勞。再講 AI 三守則，強調第三條：緊急先 119，AI 是事後整理用的。">
+  <div class="head">
+    <div class="eyebrow"><span class="chip bg-care">TOOL 1</span>復能放進日常，AI 用得安全</div>
+    <h2>復能只有三個字：<span class="care">不代勞</span></h2>
+  </div>
   <div class="grid3">
-    <div class="panel"><h3 class="care">等一下</h3><p class="big" style="font-size:21px">給他時間自己做，別急著接手。</p></div>
-    <div class="panel"><h3 class="care">給提示</h3><p class="big" style="font-size:21px">用口語或手勢引導下一步，不直接做完。</p></div>
-    <div class="panel"><h3 class="care">補不足</h3><p class="big" style="font-size:21px">只幫做不到的那一段，其餘留給他。</p></div>
+    <div class="panel"><h3 class="care">等一下</h3><p>給他時間自己做，別急著接手。</p></div>
+    <div class="panel"><h3 class="care">給提示</h3><p>用口語或手勢引導下一步。</p></div>
+    <div class="panel"><h3 class="care">補不足</h3><p>只幫做不到的那一段。</p></div>
   </div>
-  <h3 style="margin-top:6px">用 AI 協作的三條守則</h3>
-  <div class="rules">
-    <div class="panel"><b>去個資再問</b><p>姓名、地址、電話、身分證先拿掉，用「案主、80 歲、中風左側無力」描述。</p></div>
-    <div class="panel"><b>AI 是參考，不是指示</b><p>用藥、管路、法律責任，回頭問督導、護理師、藥師或法扶。</p></div>
-    <div class="panel"><b class="alert">緊急先 119</b><p>先打電話、先通報，事後才用 AI 整理紀錄。</p></div>
+  <div class="grid3">
+    <div class="panel" style="background:var(--care-soft);border-color:transparent"><h3>AI 守則 1｜去個資</h3><p>姓名、地址、電話先拿掉，用「80 歲、中風左側無力」描述。</p></div>
+    <div class="panel" style="background:var(--care-soft);border-color:transparent"><h3>AI 守則 2｜是參考</h3><p>用藥、管路、法律責任，回頭問督導、護理師、藥師。</p></div>
+    <div class="panel" style="background:var(--alert-soft);border-color:transparent"><h3 class="alert">AI 守則 3｜先 119</h3><p>先打電話、先通報，事後才用 AI 整理紀錄。</p></div>
   </div>
 </section>
 
-<!-- 7 工具二 輔具 -->
-<section class="slide" data-min="2.5" data-note="2 分半。現場展示：選一個 GMFCS 階層，再選「住」或「行」，示範篩出來的輔具，點開一張看操作方式與注意事項。最後切到「兩制度比較」說明長照與身障補助差在哪。">
-  <div class="eyebrow"><span class="chip bg-aid">TOOL 2</span>輔具資料庫導覽</div>
-  <h2>先看<span class="aid">身體功能和生活情境</span>，再找輔具</h2>
-  <div class="split">
-    <div style="display:flex;flex-direction:column;gap:20px;min-width:0">
-      <ul class="feature">
-        <li><span class="ic bg-aid">篩</span><div>三種入口交叉篩選<small>身體功能、GMFCS 行動分級、食衣住行樂生活情境</small></div></li>
-        <li><span class="ic bg-aid">看</span><div>每類輔具都有說明卡<small>操作方式、能幫什麼、注意事項，附圖片與影片搜尋</small></div></li>
-        <li><span class="ic bg-aid">補</span><div>補助一併查<small>依身分別（一般戶、中低收、低收）看長照與身障兩制度</small></div></li>
+<!-- 7 工具二 即時 -->
+<section class="slide fill" data-min="2.5" data-note="2 分半。右邊畫面先點 GMFCS 第 III 階，再選「住」或「行」，示範篩出來的輔具並點開一張。再按左邊「補助查詢」分頁，說明長照與身障補助怎麼查方向。">
+  <div class="head">
+    <div class="eyebrow"><span class="chip bg-aid">TOOL 2</span>輔具資料庫導覽</div>
+    <h2>先看<span class="aid">功能與生活情境</span>，再找輔具</h2>
+  </div>
+  <div class="demo">
+    <div class="side">
+      <ul class="points">
+        <li><span class="ic bg-aid">篩</span><div>三種入口交叉篩<small>身體功能、GMFCS 分級、食衣住行樂</small></div></li>
+        <li><span class="ic bg-aid">看</span><div>每類都有說明卡<small>操作方式、能幫什麼、注意事項</small></div></li>
+        <li><span class="ic bg-aid">補</span><div>補助一起查<small>依身分別看長照與身障兩制度</small></div></li>
       </ul>
-      <div class="panel" style="background:var(--aid-soft);border-color:transparent;gap:6px">
-        <b style="font-size:19px" class="aid">補助資料依據</b>
-        <p style="font-size:16px">身心障礙者輔具費用補助基準表（242 項，112/1/1 施行）、長期照顧服務申請及給付辦法附表（115/7/1 施行）。金額與資格以主管機關最新公告為準。</p>
+      <div class="etabs" role="tablist" style="--tc:var(--aid)">
+        <button type="button" role="tab" aria-selected="true" data-src="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" data-shot="shots/aids.jpg" data-title="長照輔具資料庫｜依功能、GMFCS、食衣住行樂查詢">輔具資料庫</button>
+        <button type="button" role="tab" aria-selected="false" data-src="https://mattsue1003.github.io/longtermcare/longtermcare.html" data-shot="shots/subsidy.jpg" data-title="生活魔法師｜長照・身障・輔具補助查詢系統">補助查詢</button>
       </div>
-      <div class="btnrow">
-        <button class="btn solid bg-aid" data-live="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" data-title="長照輔具資料庫｜依功能、GMFCS、食衣住行樂查詢">▶ 輔具資料庫</button>
-        <button class="btn aid" data-live="https://mattsue1003.github.io/longtermcare/longtermcare.html" data-title="生活魔法師｜長照・身障・輔具補助查詢系統">▶ 補助查詢</button>
-      </div>
+      <p class="say" style="font-size:18px">補助資料依身障輔具補助基準表（242 項）與長照給付辦法附表（115/7/1 施行）整理，以主管機關最新公告為準。</p>
     </div>
-    <div class="mock">
-      <div class="bar"><i></i><i></i><i></i><span>long-term-care-assistive-devices-database</span></div>
-      <div class="body">
-        <div class="tags">
-          <span class="tag" style="background:var(--aid-soft);color:var(--aid)">輔具查詢</span>
-          <span class="tag" style="background:var(--aid-soft);color:var(--aid)">長照 3.0 補助</span>
-          <span class="tag" style="background:var(--aid-soft);color:var(--aid)">身心障礙輔具</span>
-          <span class="tag" style="background:var(--aid-soft);color:var(--aid)">居家無障礙</span>
-          <span class="tag" style="background:var(--aid-soft);color:var(--aid)">兩制度比較</span>
-        </div>
-        <div style="display:flex;gap:6px;align-items:flex-end;height:110px;padding:6px 0">
-          <div style="flex:1;height:20%;background:var(--aid-soft);border-radius:6px 6px 0 0;display:grid;place-items:center;font:600 14px var(--f-mono);color:var(--aid)">I</div>
-          <div style="flex:1;height:40%;background:var(--aid-soft);border-radius:6px 6px 0 0;display:grid;place-items:center;font:600 14px var(--f-mono);color:var(--aid)">II</div>
-          <div style="flex:1;height:60%;background:var(--aid);border-radius:6px 6px 0 0;display:grid;place-items:center;font:600 14px var(--f-mono);color:#fff">III</div>
-          <div style="flex:1;height:80%;background:var(--aid-soft);border-radius:6px 6px 0 0;display:grid;place-items:center;font:600 14px var(--f-mono);color:var(--aid)">IV</div>
-          <div style="flex:1;height:100%;background:var(--aid-soft);border-radius:6px 6px 0 0;display:grid;place-items:center;font:600 14px var(--f-mono);color:var(--aid)">V</div>
-        </div>
-        <p style="font-size:15px;color:var(--mute)">GMFCS 粗大動作分級：台階越高，移動時需要的支持越多。</p>
-        <div class="tags"><span class="tag">食</span><span class="tag">衣</span><span class="tag">住</span><span class="tag">行</span><span class="tag">樂</span></div>
-        <p style="font-size:15px;color:var(--mute)">輔具選用與尺寸調整，建議由職能治療師、物理治療師或輔具評估人員評估後再購買或租借。</p>
-      </div>
-    </div>
+    <div class="embed" data-src="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" data-shot="shots/aids.jpg" data-title="長照輔具資料庫｜依功能、GMFCS、食衣住行樂查詢"></div>
   </div>
 </section>
 
-<!-- 8 工具三 六步驟 -->
-<section class="slide" data-min="1.5" data-note="1 分半。六步驟請大家跟著念一次：安全、處置、通報、記錄、交接、檢討。強調第三步是「打電話」，不是只傳 LINE。">
-  <div class="eyebrow"><span class="chip bg-alert">TOOL 3</span>快速問題處理網頁</div>
-  <h2>任何異常，先做這<span class="alert">六步</span></h2>
-  <div class="steps">
-    <div class="step"><span class="n">1</span><b>安全</b><p>先確保自己與案主安全</p></div>
-    <div class="step"><span class="n">2</span><b>處置</b><p>依情況初步處置；有生命危險直接 119</p></div>
-    <div class="step"><span class="n">3</span><b>通報</b><p>電話通報督導，不是只傳訊息</p></div>
-    <div class="step"><span class="n">4</span><b>記錄</b><p>離開案家前完成，5W1H、只寫事實</p></div>
-    <div class="step"><span class="n">5</span><b>交接</b><p>交代需要繼續觀察的事</p></div>
-    <div class="step"><span class="n">6</span><b>檢討</b><p>與督導檢討，依單位時限填通報單</p></div>
+<!-- 8 工具三 即時 -->
+<section class="slide fill" data-min="2" data-note="2 分鐘。左邊六步驟請大家跟著念一次：安全、處置、通報、記錄、交接、檢討。強調第三步是「打電話」，不是只傳 LINE。右邊畫面點上方「異常事件」分頁，展示 29 則分類。">
+  <div class="head">
+    <div class="eyebrow"><span class="chip bg-alert">TOOL 3</span>快速問題處理網頁</div>
+    <h2>任何異常，先做這<span class="alert">六步</span></h2>
   </div>
-  <div class="callout"><b>29 則</b>通報流程・跌倒與外傷・急症・管路與用藥・行為與拒絕・環境與人身・特殊事件</div>
-  <div class="btnrow">
-    <button class="btn solid bg-alert" data-live="https://mattsue1003.github.io/homecare-worker-handbook/" data-title="異常事件處理網頁資料庫（點上方「異常事件」）">▶ 現場展示（點「異常事件」）</button>
-    <a class="btn alert" href="https://mattsue1003.github.io/homecare-worker-handbook/" target="_blank" rel="noopener">開新分頁 ↗</a>
+  <div class="demo">
+    <div class="side">
+      <ol class="steps">
+        <li><span class="n">1</span><div><b>安全</b><span>先顧自己與案主</span></div></li>
+        <li><span class="n">2</span><div><b>處置</b><span>有生命危險直接 119</span></div></li>
+        <li><span class="n">3</span><div><b>通報</b><span>打電話給督導，不只傳訊息</span></div></li>
+        <li><span class="n">4</span><div><b>記錄</b><span>離開前完成，5W1H 只寫事實</span></div></li>
+        <li><span class="n">5</span><div><b>交接</b><span>交代需要繼續觀察的事</span></div></li>
+        <li><span class="n">6</span><div><b>檢討</b><span>依單位時限填通報單</span></div></li>
+      </ol>
+    </div>
+    <div class="embed" data-src="https://mattsue1003.github.io/homecare-worker-handbook/" data-shot="shots/handbook.jpg" data-title="異常事件處理網頁資料庫｜點上方「異常事件」"></div>
   </div>
 </section>
 
 <!-- 9 快問快答 -->
-<section class="slide" data-min="2.5" data-note="2 分半，互動高潮。每張先念題目，讓台下喊答案，再點卡片翻面。翻完說：這 29 則都在網頁裡，搜尋框打關鍵字就出來。">
-  <div class="eyebrow"><span class="chip bg-alert">TOOL 3</span>快問快答：點卡片看答案</div>
-  <h2>現場三秒鐘，你會怎麼做？</h2>
+<section class="slide" data-min="2" data-note="2 分鐘，互動高潮。每張先念題目，讓台下喊答案，再點卡片翻面。翻完說：這 29 則都在網頁裡，搜尋框打關鍵字就出來。">
+  <div class="head">
+    <div class="eyebrow"><span class="chip bg-alert">TOOL 3</span>快問快答</div>
+    <h2>現場三秒鐘，你會怎麼做？</h2>
+  </div>
   <div class="quiz">
     <button class="card" type="button"><div class="in">
-      <div class="face front"><span class="hint">Q1　跌倒與外傷</span><span class="q">阿公在浴室跌倒，坐在地上。你第一個動作是？</span></div>
-      <div class="face back"><b>不要馬上扶起</b><p>先問能不能動、看有沒有變形出血、頭有沒有撞到，再決定扶起或叫 119。</p></div>
+      <div class="face front"><span class="hint"><span>Q1　跌倒與外傷</span><span>點我翻面</span></span><span class="q">阿公在浴室跌倒，坐在地上。你第一個動作？</span></div>
+      <div class="face back"><b>不要馬上扶起</b><p>先問能不能動、看變形出血、頭有沒有撞到，再決定扶起或叫 119。</p></div>
     </div></button>
     <button class="card" type="button"><div class="in">
-      <div class="face front"><span class="hint">Q2　急症</span><span class="q">阿嬤說話突然含糊，一邊嘴角往下垂？</span></div>
-      <div class="face back"><b>FAST，一項就打 119</b><p>臉歪、手垂、說話不清，出現任一項就打 119，並記下「最後正常的時間」。</p></div>
+      <div class="face front"><span class="hint"><span>Q2　急症</span><span>點我翻面</span></span><span class="q">阿嬤說話突然含糊，一邊嘴角往下垂？</span></div>
+      <div class="face back"><b>FAST，一項就打 119</b><p>臉歪、手垂、說話不清任一項就打 119，記下「最後正常的時間」。</p></div>
     </div></button>
     <button class="card" type="button"><div class="in">
-      <div class="face front"><span class="hint">Q3　管路與用藥</span><span class="q">鼻胃管滑出來一截，家屬說「推回去就好」？</span></div>
+      <div class="face front"><span class="hint"><span>Q3　管路與用藥</span><span>點我翻面</span></span><span class="q">鼻胃管滑出來，家屬說「推回去就好」？</span></div>
       <div class="face back"><b>不要自己放回去</b><p>停止灌食、記錄外露長度，通報並安排重新置放。</p></div>
     </div></button>
     <button class="card" type="button"><div class="in">
-      <div class="face front"><span class="hint">Q4　環境與人身</span><span class="q">陪失智長輩外出，一轉身人不見了？</span></div>
-      <div class="face back"><b>找 5–10 分鐘，同時通報</b><p>原地周圍找並打給督導與家屬；找不到馬上報警 110，失智者不用等 24 小時。</p></div>
+      <div class="face front"><span class="hint"><span>Q4　環境與人身</span><span>點我翻面</span></span><span class="q">陪失智長輩外出，一轉身人不見了？</span></div>
+      <div class="face back"><b>找 5–10 分鐘，同時通報</b><p>找不到馬上報警 110，失智者不用等 24 小時。</p></div>
     </div></button>
   </div>
 </section>
 
-<!-- 10 5W1H + AI -->
-<section class="slide" data-min="1.5" data-note="1 分半。紀錄最常見的錯誤是寫感覺、寫推測。示範把一段口語紀錄丟給 AI，請它依 5W1H 排好、刪掉推測字眼，記得去個資。">
-  <div class="eyebrow"><span class="chip bg-alert">TOOL 3</span>異常事件紀錄 × AI</div>
-  <h2>紀錄要能<span class="alert">還原現場</span>：5W1H、只寫事實</h2>
-  <div class="w5">
-    <div><b>When</b><span>幾點幾分</span></div>
-    <div><b>Where</b><span>哪個空間</span></div>
-    <div><b>Who</b><span>在場的人</span></div>
-    <div><b>What</b><span>看到聽到什麼</span></div>
-    <div><b>How</b><span>你做了什麼</span></div>
-    <div><b>Why→</b><span>通報了誰</span></div>
+<!-- 10 紀錄 + AI -->
+<section class="slide" data-min="1" data-note="1 分鐘。紀錄最常見的錯誤是寫感覺、寫推測。示範把一段口語紀錄丟給 AI，請它依 5W1H 排好、刪掉推測字眼，記得去個資。">
+  <div class="head">
+    <div class="eyebrow"><span class="chip bg-alert">TOOL 3</span>異常事件紀錄 × AI</div>
+    <h2>紀錄要能<span class="alert">還原現場</span>：只寫事實</h2>
   </div>
   <div class="compare">
-    <div class="bad">案主好像頭暈，應該是沒吃早餐，自己不小心跌倒，看起來還好。</div>
-    <div class="good">09:40 案主於浴室門口坐地，自述「腳軟」，無出血、可自行活動四肢。09:45 電話通報督導。</div>
+    <div class="bad"><small>✕ 寫感覺、寫推測</small><span>案主好像頭暈，應該是沒吃早餐，自己不小心跌倒，看起來還好。</span></div>
+    <div class="good"><small class="care">✓ 5W1H、只寫事實</small>09:40 案主於浴室門口坐地，自述「腳軟」，無出血、可自行活動四肢。09:45 電話通報督導。</div>
   </div>
   <div class="prompt"><span class="lab">複製給 AI 的問法</span>請把以下<mark>已去除個資</mark>的異常事件紀錄，依 5W1H 排列，只保留事實、去掉推測與情緒字眼：（貼上內容）</div>
 </section>
 
-<!-- 11 我怎麼做 -->
-<section class="slide" data-min="1.5" data-note="1 分半。說明這些網頁怎麼做出來：從現場問題出發，AI 幫忙整理，但每一條都由治療師校對。鼓勵大家：你們單位也可以從十個最常被問的問題開始。">
-  <div class="eyebrow">這些網頁怎麼做出來的</div>
-  <h2>AI 負責整理，<span class="care">專業負責把關</span></h2>
+<!-- 11 教案總覽 -->
+<section class="slide" data-min="0.75" data-note="45 秒。加碼：同樣的方法也能做活動教案。快速帶過五個，點任一張直接跳到下一頁現場展示。">
+  <div class="head">
+    <div class="eyebrow"><span class="chip bg-play">加碼</span>AI 也能做活動教案</div>
+    <h2>五個<span class="play">明天就能帶</span>的互動教案</h2>
+  </div>
+  <div class="lessons">
+    <button class="lesson" type="button" data-lesson="0"><div class="thumb" style="background-image:url(shots/island.jpg)"></div><div class="tx"><em>3D・地理・懷舊</em><b>台灣好味島</b><span>22 縣市名產與景點，點一下就去旅行</span></div></button>
+    <button class="lesson" type="button" data-lesson="1"><div class="thumb" style="background-image:url(shots/tangle.jpg)"></div><div class="tx"><em>手作・專注</em><b>纏繞畫步驟示範</b><span>跟著動畫一筆一筆畫，共 36 課</span></div></button>
+    <button class="lesson" type="button" data-lesson="2"><div class="thumb" style="background-image:url(shots/japan.jpg)"></div><div class="tx"><em>團康・體操</em><b>日本日照團康影片庫</b><span>350 支影片，中文整理玩法與重點</span></div></button>
+    <button class="lesson" type="button" data-lesson="3"><div class="thumb" style="background-image:url(shots/oldsong.jpg)"></div><div class="tx"><em>懷舊・音樂</em><b>懷舊金曲猜歌</b><span>20 首金曲，打開聊天話題</span></div></button>
+    <button class="lesson" type="button" data-lesson="4"><div class="thumb" style="background-image:url(shots/oldstar.jpg)"></div><div class="tx"><em>懷舊・認知</em><b>老藝人猜猜看</b><span>30 位藝人照片，喚起共同記憶</span></div></button>
+  </div>
+</section>
+
+<!-- 12 教案展示 -->
+<section class="slide fill" data-min="2" data-note="2 分鐘。用上方分頁切換五個教案，每個停 20 秒：好味島轉一下小島、纏繞畫播一段動畫、日本影片庫篩一個道具、猜歌和猜藝人各點一題。">
+  <div class="head">
+    <div class="eyebrow"><span class="chip bg-play">加碼</span>教案現場展示</div>
+    <div class="etabs" role="tablist" id="lessonTabs" style="--tc:var(--play)">
+      <button type="button" role="tab" aria-selected="true" data-src="https://mattsue1003.github.io/taiwan-taste-island/" data-shot="shots/island.jpg" data-title="台灣好味島" data-desc="走一圈台灣，吃一圈台灣！22 縣市的名產和景點做成一座 3D 小島，點一下就去旅行，還有任務模式可以猜謎闖關。">台灣好味島</button>
+      <button type="button" role="tab" aria-selected="false" data-src="https://mattsue1003.github.io/tangle-steps/" data-shot="shots/tangle.jpg" data-title="纏繞畫步驟示範" data-desc="跟著動畫一筆一筆畫，帶長輩完成獨一無二的纏繞畫。方形、圓形、A4 共 36 課，老師自己設計的作品也能變成動畫，還能下載影片和 A4 學習單。">纏繞畫</button>
+      <button type="button" role="tab" aria-selected="false" data-src="https://mattsue1003.github.io/japan-dayservice-activity-videos/" data-shot="shots/japan.jpg" data-title="日本日照團康影片中文資料庫" data-desc="從日本日照中心的 YouTube 影片挑出 350 支團康與體操，用中文整理玩法、訓練重點和帶領提醒，依道具、場地、參與方式快速找到明天能帶的活動。">日本日照團康</button>
+      <button type="button" role="tab" aria-selected="false" data-src="https://mattsue1003.github.io/old-song-guess/" data-shot="shots/oldsong.jpg" data-title="懷舊金曲猜歌" data-desc="透過 20 首金曲，開啟長輩互動的話題。適合團體一起猜、一起唱。">金曲猜歌</button>
+      <button type="button" role="tab" aria-selected="false" data-src="https://mattsue1003.github.io/oldstar-geuss-game/" data-shot="shots/oldstar.jpg" data-title="老藝人懷舊猜猜看" data-desc="透過 30 位藝人照片，開啟長輩互動的話題，喚起共同的年代記憶。">老藝人猜猜看</button>
+    </div>
+  </div>
+  <div class="demo" style="grid-template-columns:330px 1fr">
+    <div class="side">
+      <h3 id="lessonName" class="play" style="font-size:36px">台灣好味島</h3>
+      <p id="lessonDesc" style="font-size:23px;line-height:1.6">走一圈台灣，吃一圈台灣！22 縣市的名產和景點做成一座 3D 小島，點一下就去旅行，還有任務模式可以猜謎闖關。</p>
+      <p class="say">更多教案每天在<b>臉書粉專</b>分享，留言即可取得。</p>
+    </div>
+    <div class="embed" data-src="https://mattsue1003.github.io/taiwan-taste-island/" data-shot="shots/island.jpg" data-title="台灣好味島"></div>
+  </div>
+</section>
+
+<!-- 13 我怎麼做 -->
+<section class="slide" data-min="1" data-note="1 分鐘。這些網頁怎麼做出來：從現場問題出發，AI 幫忙整理，每一條都由治療師校對。鼓勵大家從十個最常被問的問題開始。">
+  <div class="head">
+    <div class="eyebrow">這些網頁怎麼做出來的</div>
+    <h2>AI 負責整理，<span class="care">專業負責把關</span></h2>
+  </div>
   <div class="flow">
     <div><b>STEP 1</b><span>收集現場最常被問的問題</span></div>
     <div><b>STEP 2</b><span>對照法規、函釋與照護指引</span></div>
@@ -487,61 +515,55 @@ body.list #hud,body.list #progress,body.list #timer{display:none}
     <div><b>STEP 5</b><span>做成免費網頁，手機就能開</span></div>
     <div><b>STEP 6</b><span>夥伴回饋，持續更新</span></div>
   </div>
-  <div class="grid2 grow">
-    <div class="panel" style="justify-content:center"><h3>給單位主管</h3><p class="big" style="font-size:22px">從<b>十個最常被打電話問的問題</b>開始，就是你們自己的資料庫。</p></div>
-    <div class="panel" style="justify-content:center"><h3>給第一線夥伴</h3><p class="big" style="font-size:22px">遇到狀況先查、再問、後記錄。<b>工具讓你不慌，不是讓你自己扛。</b></p></div>
+  <div class="grid2">
+    <div class="panel"><h3>給單位主管</h3><p>從<b style="color:var(--ink)">十個最常被打電話問的問題</b>開始，就是你們自己的資料庫。</p></div>
+    <div class="panel"><h3>給第一線夥伴</h3><p>遇到狀況先查、再問、後記錄。<b style="color:var(--ink)">工具讓你不慌，不是讓你自己扛。</b></p></div>
   </div>
 </section>
 
-<!-- 12 帶走 -->
-<section class="slide" data-min="1" data-note="1 分鐘。停在這頁讓大家拍照或掃 QR，邊講：三個工具都免費，歡迎分享給單位夥伴。">
-  <div class="eyebrow">現在就掃，帶回單位</div>
-  <h2>拍照、掃描、分享給你的夥伴</h2>
+<!-- 14 帶走 -->
+<section class="slide" data-min="0.75" data-note="45 秒。停在這頁讓大家拍照或掃 QR：三個工具都免費，歡迎分享給單位夥伴；教案在粉專留言就能拿。">
+  <div class="head">
+    <div class="eyebrow">現在就掃，帶回單位</div>
+    <h2>拍照、掃描、分享給你的夥伴</h2>
+  </div>
   <div class="take">
-    <a class="panel" href="https://mattsue1003.github.io/homecare-worker-handbook/" target="_blank" rel="noopener">
-      <div class="qr" data-qr="https://mattsue1003.github.io/homecare-worker-handbook/"></div>
-      <h3 class="care">照顧・復能・異常事件</h3><p>居服員專業資料庫</p>
-    </a>
-    <a class="panel" href="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" target="_blank" rel="noopener">
-      <div class="qr" data-qr="https://mattsue1003.github.io/long-term-care-assistive-devices-database/"></div>
-      <h3 class="aid">長照輔具資料庫</h3><p>功能・GMFCS・食衣住行樂</p>
-    </a>
-    <a class="panel" href="https://mattsue1003.github.io/longtermcare/" target="_blank" rel="noopener">
-      <div class="qr" data-qr="https://mattsue1003.github.io/longtermcare/"></div>
-      <h3 class="aid">輔具補助查詢</h3><p>生活魔法師入口</p>
-    </a>
-    <a class="panel" href="https://www.facebook.com/profile.php?id=100063748491881" target="_blank" rel="noopener">
-      <div class="qr" data-qr="https://www.facebook.com/profile.php?id=100063748491881"></div>
-      <h3 class="gold">臉書粉專</h3><p>每天教案與專業文章，留言即可取得</p>
-    </a>
+    <a class="panel" href="https://mattsue1003.github.io/homecare-worker-handbook/" target="_blank" rel="noopener"><div class="qr" data-qr="https://mattsue1003.github.io/homecare-worker-handbook/"></div><h3 class="care">照顧・復能・異常</h3><p>居服員專業資料庫</p></a>
+    <a class="panel" href="https://mattsue1003.github.io/long-term-care-assistive-devices-database/" target="_blank" rel="noopener"><div class="qr" data-qr="https://mattsue1003.github.io/long-term-care-assistive-devices-database/"></div><h3 class="aid">長照輔具資料庫</h3><p>功能・GMFCS・食衣住行樂</p></a>
+    <a class="panel" href="https://mattsue1003.github.io/longtermcare/" target="_blank" rel="noopener"><div class="qr" data-qr="https://mattsue1003.github.io/longtermcare/"></div><h3 class="aid">輔具補助查詢</h3><p>生活魔法師入口</p></a>
+    <a class="panel" href="https://www.facebook.com/profile.php?id=100063748491881" target="_blank" rel="noopener"><div class="qr" data-qr="https://www.facebook.com/profile.php?id=100063748491881"></div><h3 class="gold">臉書粉專</h3><p>每天教案與專業文章，留言即可取得</p></a>
   </div>
 </section>
 
-<!-- 13 謝謝 -->
-<section class="slide end" data-min="0.5" data-note="30 秒。謝謝主辦單位、謝謝每一位在案家的照顧夥伴。">
+<!-- 15 謝謝 -->
+<section class="slide end" data-min="0.25" data-note="15 秒。謝謝主辦單位、謝謝每一位在案家的照顧夥伴。">
   <div class="award" style="border-color:#D9B66A;color:#D9B66A"><span class="medal" style="background:#D9B66A;color:var(--ink)">★</span>老師真會獎</div>
   <h2>謝謝大家</h2>
   <p class="lead">這個獎屬於每一位在案家、一個人面對現場的照顧夥伴。</p>
   <div class="thanks"><span>優照護</span><span>中華高齡專業照護訓練協會</span><span>每一位照顧夥伴</span></div>
-  <div class="foot"><span>鍾孟修　職能治療師｜愛迪樂</span><span>facebook.com/profile.php?id=100063748491881</span></div>
+  <div class="foot"><span>鍾孟修　職能治療師｜愛迪樂</span><span>臉書粉專：facebook.com/profile.php?id=100063748491881</span></div>
 </section>
 
 </div></div>
 
 <div id="notes" hidden></div>
-<div id="hud">
-  <button id="prev" type="button" aria-label="上一頁">←</button>
-  <span id="count">1 / 13</span>
-  <button id="next" type="button" aria-label="下一頁">→</button>
-  <span class="sp"></span>
-  <span>F 全螢幕　N 講稿　T 計時</span>
-  <button id="fs" type="button">全螢幕</button>
-  <button id="nt" type="button">講稿</button>
+<div id="help" hidden>
+  <div><kbd>← →</kbd>換頁（也可點右下箭頭）</div>
+  <div><kbd>F</kbd>全螢幕　<kbd>N</kbd>講稿</div>
+  <div><kbd>T</kbd>計時開始／暫停　<kbd>R</kbd>歸零</div>
+  <div style="color:#9DB8B0">操作嵌入的網頁後，方向鍵會留在網頁裡；點簡報空白處或用右下箭頭換頁。</div>
 </div>
+<nav id="nav" aria-label="簡報換頁">
+  <button id="nt" class="more" type="button">講稿</button>
+  <button id="hp" class="more" type="button" aria-label="操作說明">?</button>
+  <button id="prev" type="button" aria-label="上一頁">←</button>
+  <span class="count" id="count">1 / 15</span>
+  <button id="next" type="button" aria-label="下一頁">→</button>
+</nav>
 
 <div id="live" hidden>
   <header><b id="liveTitle"></b><a id="liveOpen" href="#" target="_blank" rel="noopener">開新分頁 ↗</a><button id="liveClose" type="button">關閉 Esc</button></header>
-  <div class="wrap"><div class="msg">網頁載入中…<br>若此處一直空白，請按右上角「開新分頁」。</div><iframe id="liveFrame" title="即時網頁展示" referrerpolicy="no-referrer"></iframe></div>
+  <div class="wrap"><iframe id="liveFrame" title="全螢幕網頁展示"></iframe></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -550,83 +572,146 @@ body.list #hud,body.list #progress,body.list #timer{display:none}
   const slides=[...document.querySelectorAll('.slide')];
   const stage=document.getElementById('stage');
   const total=slides.length;
+  const countEl=document.getElementById('count');
+  const isList=()=>document.body.classList.contains('list');
+  // 在 GitHub Pages／本機開啟時嵌入即時網頁；其他環境（預覽連結、手機）顯示截圖
+  const canEmbed=location.protocol==='file:'||/(^|\.)github\.io$|^localhost$|^127\.0\.0\.1$/.test(location.hostname);
   let i=0;
   try{const h=parseInt(location.hash.replace(/\D/g,''),10); if(h>=1&&h<=total) i=h-1;}catch(e){}
 
+  /* ---------- 嵌入元件 ---------- */
+  const embeds=[...document.querySelectorAll('.embed')];
+  embeds.forEach(el=>{
+    el.innerHTML='<div class="ebar"><i></i><i></i><i></i><span class="url"></span><button type="button" class="fsbtn">全螢幕</button><a class="open" target="_blank" rel="noopener">開新分頁 ↗</a></div>'+
+      '<div class="eview"><img class="shot" alt=""><a class="tapopen" target="_blank" rel="noopener">開啟網頁 ↗</a></div>';
+    el.querySelector('.fsbtn').addEventListener('click',e=>{e.stopPropagation();openLive(el.dataset.src,el.dataset.title);});
+    setEmbed(el,el.dataset.src,el.dataset.shot,el.dataset.title,false);
+  });
+  function setEmbed(el,src,shot,title,load){
+    el.dataset.src=src; el.dataset.shot=shot; el.dataset.title=title;
+    el.querySelector('.url').textContent=src.replace(/^https?:\/\//,'');
+    el.querySelector('.open').href=src; el.querySelector('.tapopen').href=src;
+    const img=el.querySelector('.shot'); img.src=shot; img.alt=title+' 畫面';
+    const old=el.querySelector('iframe'); if(old) old.remove();
+    const ld=el.querySelector('.loading'); if(ld) ld.remove();
+    el.dataset.loaded='';
+    if(load) loadEmbed(el);
+  }
+  function loadEmbed(el){
+    if(!canEmbed||isList()||el.dataset.loaded) return;
+    el.dataset.loaded='1';
+    const view=el.querySelector('.eview');
+    const tag=document.createElement('span'); tag.className='loading'; tag.textContent='載入即時畫面…'; view.appendChild(tag);
+    const f=document.createElement('iframe');
+    f.title=el.dataset.title; f.setAttribute('allow','autoplay; fullscreen');
+    f.addEventListener('load',()=>{f.classList.add('ready'); tag.remove();});
+    f.src=el.dataset.src; view.appendChild(f);
+  }
+  document.querySelectorAll('.etabs').forEach(tabs=>{
+    const el=tabs.closest('.slide').querySelector('.embed');
+    tabs.querySelectorAll('button').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();selectTab(tabs,b,el);}));
+  });
+  function selectTab(tabs,b,el){
+    tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b?'true':'false'));
+    setEmbed(el,b.dataset.src,b.dataset.shot,b.dataset.title,true);
+    if(b.dataset.desc){document.getElementById('lessonName').textContent=b.dataset.title;document.getElementById('lessonDesc').textContent=b.dataset.desc;}
+  }
+
+  /* ---------- 版面 ---------- */
   function fit(){
-    const list=window.innerWidth<760;
+    const list=window.innerWidth<760||window.innerHeight<460;
+    const was=isList();
     document.body.classList.toggle('list',list);
-    if(list){stage.style.transform='';return;}
+    if(list){
+      stage.style.transform='';
+      if(!was) embeds.forEach(el=>{const f=el.querySelector('iframe'); if(f){f.remove(); el.dataset.loaded='';} const l=el.querySelector('.loading'); if(l) l.remove();});
+      return;
+    }
     const s=Math.min(window.innerWidth/1280, window.innerHeight/720);
     stage.style.transform='translate(-50%,-50%) scale('+s+')';
+    if(was) show(i);
   }
   function show(n){
     i=Math.max(0,Math.min(total-1,n));
     slides.forEach((s,k)=>s.classList.toggle('on',k===i));
-    document.getElementById('count').textContent=(i+1)+' / '+total;
+    countEl.textContent=(i+1)+' / '+total;
     document.getElementById('progress').style.width=((i+1)/total*100)+'%';
     try{history.replaceState(null,'','#s'+(i+1));}catch(e){}
     renderNote();
+    [i,i+1].forEach(k=>{const s=slides[k]; if(s) s.querySelectorAll('.embed').forEach(loadEmbed);});
   }
-  // 講稿
-  const notes=document.getElementById('notes');
-  function renderNote(){
-    const s=slides[i];
-    notes.innerHTML='<b>'+(i+1)+'/'+total+'　建議 '+s.dataset.min+' 分鐘</b>　'+s.dataset.note;
+  function go(n){
+    if(isList()){const s=slides[Math.max(0,Math.min(total-1,n))]; s.scrollIntoView({behavior:'smooth',block:'start'}); i=slides.indexOf(s); countEl.textContent=(i+1)+' / '+total;}
+    else show(n);
   }
-  function toggleNotes(){notes.hidden=!notes.hidden;}
-  // 計時
+
+  /* ---------- 講稿／說明／計時 ---------- */
+  const notes=document.getElementById('notes'), help=document.getElementById('help');
+  function renderNote(){const s=slides[i]; notes.innerHTML='<b>'+(i+1)+'/'+total+'　建議 '+s.dataset.min+' 分鐘</b>　'+s.dataset.note;}
   const timerEl=document.getElementById('timer');
   let remain=20*60, running=false, tick=null;
-  function drawTimer(){const m=Math.floor(Math.abs(remain)/60), s=Math.abs(remain)%60;
+  function drawTimer(){const a=Math.abs(remain),m=Math.floor(a/60),s=a%60;
     timerEl.textContent=(remain<0?'-':'')+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-    timerEl.classList.toggle('warn',remain<=120);}
-  function toggleTimer(){running=!running; if(running){tick=setInterval(()=>{remain--;drawTimer();},1000);}else{clearInterval(tick);}}
+    timerEl.classList.toggle('warn',remain<=120); timerEl.classList.toggle('run',running);}
+  function toggleTimer(){running=!running; clearInterval(tick); if(running) tick=setInterval(()=>{remain--;drawTimer();},1000); drawTimer();}
   function resetTimer(){running=false;clearInterval(tick);remain=20*60;drawTimer();}
   timerEl.addEventListener('click',toggleTimer);
-  // 全螢幕
   function fs(){try{if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(()=>{});}else{document.exitFullscreen().catch(()=>{});}}catch(e){}}
-  // 即時網頁
-  const live=document.getElementById('live'), frame=document.getElementById('liveFrame');
-  function openLive(url,title){document.getElementById('liveTitle').textContent=title||url;document.getElementById('liveOpen').href=url;frame.src=url;live.hidden=false;}
-  function closeLive(){live.hidden=true;frame.src='about:blank';}
-  document.querySelectorAll('[data-live]').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();openLive(b.dataset.live,b.dataset.title);}));
-  document.getElementById('liveClose').addEventListener('click',closeLive);
-  // 翻牌
-  document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',e=>{e.stopPropagation();c.classList.toggle('flip');}));
 
-  document.getElementById('prev').onclick=()=>show(i-1);
-  document.getElementById('next').onclick=()=>show(i+1);
-  document.getElementById('fs').onclick=fs;
-  document.getElementById('nt').onclick=toggleNotes;
+  /* ---------- 全螢幕展示 ---------- */
+  const live=document.getElementById('live'), frame=document.getElementById('liveFrame');
+  function openLive(url,title){
+    document.getElementById('liveTitle').textContent=title||url; document.getElementById('liveOpen').href=url; frame.src=url; live.hidden=false;}
+  function closeLive(){live.hidden=true;frame.src='about:blank';window.focus();}
+  document.getElementById('liveClose').addEventListener('click',closeLive);
+
+  /* ---------- 互動 ---------- */
+  document.querySelectorAll('.card').forEach(c=>c.addEventListener('click',e=>{e.stopPropagation();c.classList.toggle('flip');}));
+  document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>go(parseInt(b.dataset.goto,10)-1)));
+  const lessonTabs=document.getElementById('lessonTabs');
+  document.querySelectorAll('[data-lesson]').forEach(b=>b.addEventListener('click',()=>{
+    const target=lessonTabs.closest('.slide');
+    selectTab(lessonTabs,lessonTabs.querySelectorAll('button')[+b.dataset.lesson],target.querySelector('.embed'));
+    go(slides.indexOf(target));
+  }));
+  document.getElementById('prev').onclick=()=>go(i-1);
+  document.getElementById('next').onclick=()=>go(i+1);
+  document.getElementById('nt').onclick=()=>{notes.hidden=!notes.hidden;};
+  document.getElementById('hp').onclick=()=>{help.hidden=!help.hidden;};
+  // 點簡報空白處：把鍵盤焦點拿回簡報
+  document.getElementById('viewport').addEventListener('mousedown',e=>{if(!e.target.closest('iframe,button,a')){if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); window.focus();}});
 
   document.addEventListener('keydown',e=>{
     if(!live.hidden){ if(e.key==='Escape') closeLive(); return; }
-    if(e.target.closest&&e.target.closest('input,textarea')) return;
     const k=e.key;
-    if(k==='ArrowRight'||k==='PageDown'||k===' '){e.preventDefault();show(i+1);}
-    else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();show(i-1);}
-    else if(k==='Home') show(0); else if(k==='End') show(total-1);
+    if(k==='ArrowRight'||k==='PageDown'||(k===' '&&!(e.target.closest&&e.target.closest('button')))){e.preventDefault();go(i+1);}
+    else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();go(i-1);}
+    else if(k==='Home') go(0); else if(k==='End') go(total-1);
     else if(k==='f'||k==='F') fs();
-    else if(k==='n'||k==='N') toggleNotes();
+    else if(k==='n'||k==='N') notes.hidden=!notes.hidden;
     else if(k==='t'||k==='T') toggleTimer();
     else if(k==='r'||k==='R') resetTimer();
+    else if(k==='?') help.hidden=!help.hidden;
+    else if(k==='Escape'){notes.hidden=true;help.hidden=true;}
   });
-  // 觸控滑動
-  let sx=null;
-  document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;},{passive:true});
-  document.addEventListener('touchend',e=>{if(sx===null||document.body.classList.contains('list'))return;const dx=e.changedTouches[0].clientX-sx; if(Math.abs(dx)>50) show(i+(dx<0?1:-1)); sx=null;},{passive:true});
-
-  // QR
-  function makeQR(){
-    document.querySelectorAll('[data-qr]').forEach(el=>{
-      const url=el.dataset.qr;
-      try{ if(typeof QRCode==='undefined') throw 0; el.innerHTML=''; new QRCode(el,{text:url,width:256,height:256,colorDark:'#122B27',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.M}); el.removeAttribute('title'); }
-      catch(e){ el.innerHTML='<div class="fallback">'+url.replace(/^https?:\/\//,'')+'</div>'; }
-    });
+  let sx=null, sy=null;
+  document.addEventListener('touchstart',e=>{sx=e.touches[0].clientX; sy=e.touches[0].clientY;},{passive:true});
+  document.addEventListener('touchend',e=>{if(sx===null||isList())return;const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy; if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5) go(i+(dx<0?1:-1)); sx=null;},{passive:true});
+  if('IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>{if(!isList())return; es.forEach(en=>{if(en.isIntersecting){i=slides.indexOf(en.target);countEl.textContent=(i+1)+' / '+total;}});},{rootMargin:'-45% 0px -45% 0px'});
+    slides.forEach(s=>io.observe(s));
   }
+
+  /* ---------- QR ---------- */
+  document.querySelectorAll('[data-qr]').forEach(el=>{
+    const url=el.dataset.qr;
+    try{ if(typeof QRCode==='undefined') throw 0; new QRCode(el,{text:url,width:256,height:256,colorDark:'#122B27',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.M}); el.removeAttribute('title'); }
+    catch(e){ el.innerHTML='<div class="fallback">'+url.replace(/^https?:\/\//,'')+'</div>'; }
+  });
+
   window.addEventListener('resize',fit);
-  window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.replace(/\D/g,''),10); if(h>=1&&h<=total&&h-1!==i) show(h-1);});
-  fit(); show(i); drawTimer(); makeQR();
+  window.addEventListener('hashchange',()=>{const h=parseInt(location.hash.replace(/\D/g,''),10); if(h>=1&&h<=total&&h-1!==i) go(h-1);});
+  fit(); show(i); drawTimer();
+  if(isList()&&i>0) slides[i].scrollIntoView();
 })();
 </script>
