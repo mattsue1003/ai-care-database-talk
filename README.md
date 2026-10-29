@@ -6,6 +6,10 @@
 
 線上觀看：https://mattsue1003.github.io/ai-care-database-talk/
 
+## PPT 版
+
+[下載 PPT 版（含超連結與講稿）](ai-care-database-talk.pptx)
+
 ## 簡報中介紹的三個工具
 
 - AI 照顧與復能資料庫／異常事件快速處理：https://mattsue1003.github.io/homecare-worker-handbook/
